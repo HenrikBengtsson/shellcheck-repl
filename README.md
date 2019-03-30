@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/HenrikBengtsson/shellcheck-repl.svg?branch=master)](https://travis-ci.org/HenrikBengtsson/shellcheck-repl)
+
 # shellcheck-repl: Validation of Shell Commands Before Evaluation
 
 
