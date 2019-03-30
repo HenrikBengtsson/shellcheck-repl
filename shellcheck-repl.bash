@@ -1,6 +1,3 @@
-# On 2019-03-29, Henrik Bengtsson wrote in response to https://github.com/koalaman/shellcheck/issues/1535:
-#
-# I'm forced to use older versions of ShellCheck on different systems (e.g. Ubuntu 18.04 is still ShellCheck 0.4.6) and noticed that -S was introduced in 0.6.0 (2018-12-02). So, I tweaked your code to be:
 #!/usr/bin/env bash
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -9,7 +6,7 @@ function sc_version() {
         # Example: '0.4.6'
         SHELLCHECK_VERSION=$(shellcheck --version | grep version: | sed -E 's/version:[ ]+//')
         # Example: '0.4'
-	SHELLCHECK_VERSION_X_Y="${SHELLCHECK_VERSION%.*}"
+        SHELLCHECK_VERSION_X_Y="${SHELLCHECK_VERSION%.*}"
     fi
 }
 
@@ -26,22 +23,45 @@ function sc_repl_verify_or_unbind() {
     if version_gt "${SHELLCHECK_VERSION_X_Y}" 0.5; then
         opts+=("--severity=\"${SC_VERIFY_LEVEL:=info}\"")
     fi
+    ## Execute shell command: sc_repl_verify_bind_accept
+    ## Triggered by key sequence: Ctrl-x Ctrl-b 2
     shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") ||
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
 }
 
 function sc_repl_verify_bind_accept() {
+    ## Execute shell command: accept-line
+    ## Triggered by key sequence: Ctrl-x Ctrl-b 2
     bind '"\C-x\C-b2": accept-line'
 }
 
-
-function sc_repl_setup() {
-    SHELLCHECK_REPL_EXCLUDE=2154
-    sc_version
+function sc_repl_enable() {
     sc_repl_verify_bind_accept
+
+    ## Execute shell command: sc_repl_verify_or_unbind()
+    ## Triggered by key sequence: Ctrl-x Ctrl-b 1
     bind -x '"\C-x\C-b1": sc_repl_verify_or_unbind'
-    bind '"\C-m":"\C-x\C-b1\C-x\C-b2"'
+    
+    ## Execute keystrokes: Ctrl-x Ctrl-b 1 Ctrl-x Ctrl-b 2
+    ## Triggered by key sequence: Ctrl-m (Carriage Return)
+    bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
 }
 
+function sc_repl_disable() {
+    ## Execute shell command: accept-line
+    ## Triggered by key sequence: Ctrl-m (Carriage Return)
+    bind '"\C-m": accept-line'
+}
+
+function sc_repl_setup() {
+    sc_version
+    ## Ignore some ShellCheck issues:
+    ## SC1001: This \= will be a regular '=' in this context.
+    ## SC2034: 'var' appears unused. Verify it or export it.
+    ## SC2154: 'var' is referenced but not assigned.
+    ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+    SHELLCHECK_REPL_EXCLUDE=1001,2034,2154,2164
+    sc_repl_enable
+}
 
 sc_repl_setup
