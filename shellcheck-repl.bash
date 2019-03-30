@@ -1,20 +1,47 @@
-# On 2019-03-28, GitHub user @xPMo wrote in response to https://github.com/koalaman/shellcheck/issues/1535:
+# On 2019-03-29, Henrik Bengtsson wrote in response to https://github.com/koalaman/shellcheck/issues/1535:
 #
-# This overwrites the default enter (`\C-m`) binding to run `\C-x\C-b1\C-x\C-b2`.
-# The reason for this method is that [bash widgets can do exactly one of: press keys, call external commands, or call readline commnads](https://stackoverflow.com/questions/8366450/complex-keybinding-in-bash). So, we press a bunch of keys, which we then bind to other commands.
-# 
-# `\C-x\C-b1` is bound to the checking function. If the check fails, it will rebind `\C-x\C-b2` to a function to bind it to `accept-line`.
-# `\C-x\C-b2` is bound by default to accept-line (i.e.: run the command). When `shellcheck` succeeds, it will stay that way.
-# I recommend adding a bind `'"\C-j": accept-line'` or similar so you can bypass the check if need be.
-sc_verify_or_unbind(){
-	shellcheck -S "${SC_VERIFY_LEVEL:=info}" -s bash -x \
-		--exclude=2154 \
-		<(printf '%s\n' "$READLINE_LINE") ||
-		bind -x '"\C-x\C-b2": sc_verify_bind_accept'
+# I'm forced to use older versions of ShellCheck on different systems (e.g. Ubuntu 18.04 is still ShellCheck 0.4.6) and noticed that -S was introduced in 0.6.0 (2018-12-02). So, I tweaked your code to be:
+#!/usr/bin/env bash
+
+## Source: https://github.com/koalaman/shellcheck/issues/1535
+function sc_version() {
+    if [ -z "${SHELLCHECK_VERSION+x}" ]; then
+        # Example: '0.4.6'
+        SHELLCHECK_VERSION=$(shellcheck --version | grep version: | sed -E 's/version:[ ]+//')
+        # Example: '0.4'
+	SHELLCHECK_VERSION_X_Y="${SHELLCHECK_VERSION%.*}"
+    fi
 }
-sc_verify_bind_accept(){
-	bind '"\C-x\C-b2": accept-line'
+
+function version_gt() {
+    test "$(printf '%s\n' "$@" | sort --version-sort | head -n 1)" != "$1"
 }
-sc_verify_bind_accept
-bind -x '"\C-x\C-b1": sc_verify_or_unbind'
-bind '"\C-m":"\C-x\C-b1\C-x\C-b2"'
+
+function sc_repl_verify_or_unbind() {
+    local opts=("--shell=bash" "--external-sources")
+    if [ ! -z "${SHELLCHECK_REPL_EXCLUDE+x}" ]; then
+        opts+=("--exclude=${SHELLCHECK_REPL_EXCLUDE}")
+    fi
+    # Option -S/--severity requires ShellCheck (>= 0.6.0)
+    if version_gt "${SHELLCHECK_VERSION_X_Y}" 0.5; then
+        opts+=("--severity=\"${SC_VERIFY_LEVEL:=info}\"")
+    fi
+    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") ||
+        bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
+}
+
+function sc_repl_verify_bind_accept() {
+    bind '"\C-x\C-b2": accept-line'
+}
+
+
+function sc_repl_setup() {
+    SHELLCHECK_REPL_EXCLUDE=2154
+    sc_version
+    sc_repl_verify_bind_accept
+    bind -x '"\C-x\C-b1": sc_repl_verify_or_unbind'
+    bind '"\C-m":"\C-x\C-b1\C-x\C-b2"'
+}
+
+
+sc_repl_setup
