@@ -31,7 +31,7 @@ Download the `shellcheck-repl.bash` script and source it in your `~/.bashrc` sta
 ```sh
 $ cd /path/to/software
 $ git clone https://github.com/HenrikBengtsson/shellcheck-repl.git
-$ echo ". /path/to/software/shellcheck-repl.bash" >> ~/.bashrc
+$ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 ```
 
 
