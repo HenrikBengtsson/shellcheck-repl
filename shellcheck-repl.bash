@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
-function sc_version() {
+sc_version() {
     if [ -z "${SHELLCHECK_VERSION+x}" ]; then
         # Example: '0.4.6'
-        SHELLCHECK_VERSION=$(shellcheck --version | grep version: | sed -E 's/version:[ ]+//')
+        SHELLCHECK_VERSION=$(shellcheck --version | sed -nE 's/version: +(.+)/\1/p')
         # Example: '0.4'
         SHELLCHECK_VERSION_X_Y="${SHELLCHECK_VERSION%.*}"
     fi
 }
 
-function version_gt() {
+version_gt() {
     test "$(printf '%s\n' "$@" | sort --version-sort | head -n 1)" != "$1"
 }
 
-function sc_repl_verify_or_unbind() {
+sc_repl_verify_or_unbind() {
     local opts=("--shell=bash" "--external-sources")
-    if [ ! -z "${SHELLCHECK_REPL_EXCLUDE+x}" ]; then
+    if [[ -n "${SHELLCHECK_REPL_EXCLUDE}" ]]; then
         opts+=("--exclude=${SHELLCHECK_REPL_EXCLUDE}")
     fi
     # Option -S/--severity requires ShellCheck (>= 0.6.0)
     if version_gt "${SHELLCHECK_VERSION_X_Y}" 0.5; then
-        opts+=("--severity=\"${SC_VERIFY_LEVEL:=info}\"")
+        opts+=("--severity=\"${SHELLCHECK_REPL_VERIFY_LEVEL:=info}\"")
     fi
     ## Execute shell command: sc_repl_verify_bind_accept
     ## Triggered by key sequence: Ctrl-x Ctrl-b 2
@@ -29,13 +29,13 @@ function sc_repl_verify_or_unbind() {
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
 }
 
-function sc_repl_verify_bind_accept() {
+sc_repl_verify_bind_accept() {
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-x Ctrl-b 2
     bind '"\C-x\C-b2": accept-line'
 }
 
-function sc_repl_enable() {
+sc_repl_enable() {
     sc_repl_verify_bind_accept
 
     ## Execute shell command: sc_repl_verify_or_unbind()
@@ -47,13 +47,13 @@ function sc_repl_enable() {
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
 }
 
-function sc_repl_disable() {
+sc_repl_disable() {
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-m (Carriage Return)
     bind '"\C-m": accept-line'
 }
 
-function sc_repl_setup() {
+sc_repl_setup() {
     sc_version
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
