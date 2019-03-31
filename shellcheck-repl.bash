@@ -31,9 +31,10 @@ sc_repl_verify_or_unbind() {
     case ${SHELLCHECK_REPL_INFO,,} in
         gcc|short) shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE") | cut -d : -f 4- ;;
         full|wiki) shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | tail -n +2 ;;
+        none) shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") ;;
         *) shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | sed -n '1,2b; /^$/q; p' ;;
     esac
-    if [[ "$PIPESTATUS" != 0 ]]; then
+    if [[ "${PIPESTATUS[1]}" != 0 ]]; then
         ## Execute shell command: sc_repl_verify_bind_accept
         ## Triggered by key sequence: Ctrl-x Ctrl-b 2
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
