@@ -19,6 +19,10 @@ sc_repl_verify_or_unbind() {
     if [[ -n "${SHELLCHECK_REPL_EXCLUDE}" ]]; then
         opts+=("--exclude=${SHELLCHECK_REPL_EXCLUDE}")
     fi
+    # Option -C/--color requires ShellCheck (>= 0.4.2)
+    if version_gt "${SHELLCHECK_VERSION}" 0.4.1; then
+        opts+=("--color=always")
+    fi
     # Option -S/--severity requires ShellCheck (>= 0.6.0)
     if version_gt "${SHELLCHECK_VERSION_X_Y}" 0.5; then
         opts+=("--severity=\"${SHELLCHECK_REPL_VERIFY_LEVEL:=info}\"")
