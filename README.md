@@ -37,5 +37,5 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 
 ## Authors
 
-* Original code by GitHub user [xMpo](https://github.com/xPMo)
+* GitHub user [xPMo](https://github.com/xPMo) - original code
 * Henrik Bengtsson
