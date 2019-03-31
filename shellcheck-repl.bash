@@ -21,7 +21,7 @@ sc_repl_verify_or_unbind() {
     fi
     # Option -S/--severity requires ShellCheck (>= 0.6.0)
     if version_gt "${SHELLCHECK_VERSION_X_Y}" 0.5; then
-        opts+=("--severity=\"${SHELLCHECK_REPL_VERIFY_LEVEL:=info}\"")
+        opts+=("--severity=${SHELLCHECK_REPL_VERIFY_LEVEL:=info}")
     fi
     ## Execute shell command: sc_repl_verify_bind_accept
     ## Triggered by key sequence: Ctrl-x Ctrl-b 2
