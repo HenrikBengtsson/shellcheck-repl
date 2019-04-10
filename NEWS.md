@@ -1,5 +1,12 @@
 # shellcheck-repl
 
+## Version 0.0.4-9000 (2019-04-09)
+
+SIGNIFICANT CHANGES:
+
+ * The license is ISC (by the Internet Software Consortium).
+ 
+
 ## Version 0.0.4 (2019-03-30)
 
 NEW FEATURES:
