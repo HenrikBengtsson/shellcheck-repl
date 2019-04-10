@@ -6,6 +6,12 @@ SIGNIFICANT CHANGES:
 
  * The license is ISC (by the Internet Software Consortium).
  
+NEW FEATURES:
+
+ * Use colored output if the ShellCheck version supports it.
+
+ * Cleaner output by no longer displaying "In /dev/fd/63 line 1:".
+ 
 
 ## Version 0.0.4 (2019-03-30)
 
