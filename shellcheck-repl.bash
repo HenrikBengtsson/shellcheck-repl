@@ -28,18 +28,22 @@ sc_repl_verify_or_unbind() {
         opts+=("--severity=${SHELLCHECK_REPL_VERIFY_LEVEL:=info}")
     fi
     # Filter the output of shellcheck by removing filename
-    case ${SHELLCHECK_REPL_INFO,,} in
-        short|gcc)
-	    shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE") | cut -d : -f 4-
-	    ;;
-        full|wiki)
-	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | tail -n +2
-	    ;;
-        none)
+    local style=${SHELLCHECK_REPL_INFO,,}
+    if [[ -z "${style}" ]]; then style="clean"; fi
+    case ${style} in
+        raw)
 	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE")
 	    ;;
-        *)
+        full)
+	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | tail -n +2
+	    ;;
+        clean)
 	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | sed -n '1,2b; /^$/q; p'
+	    ;;
+        note)
+	    shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE") | cut -d : -f 4- ;;
+	*)
+	    >&2 echo "ERROR: Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
 	    ;;
     esac
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
