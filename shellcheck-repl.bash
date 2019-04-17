@@ -19,14 +19,38 @@ sc_repl_verify_or_unbind() {
     if [[ -n "${SHELLCHECK_REPL_EXCLUDE}" ]]; then
         opts+=("--exclude=${SHELLCHECK_REPL_EXCLUDE}")
     fi
+    # Option -C/--color requires ShellCheck (>= 0.4.2)
+    if version_gt "${SHELLCHECK_VERSION}" 0.4.1; then
+        opts+=("--color=always")
+    fi
     # Option -S/--severity requires ShellCheck (>= 0.6.0)
     if version_gt "${SHELLCHECK_VERSION_X_Y}" 0.5; then
-        opts+=("--severity=\"${SHELLCHECK_REPL_VERIFY_LEVEL:=info}\"")
+        opts+=("--severity=${SHELLCHECK_REPL_VERIFY_LEVEL:=info}")
     fi
-    ## Execute shell command: sc_repl_verify_bind_accept
-    ## Triggered by key sequence: Ctrl-x Ctrl-b 2
-    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") ||
+    # Filter the output of shellcheck by removing filename
+    local style=${SHELLCHECK_REPL_INFO,,}
+    if [[ -z "${style}" ]]; then style="clean"; fi
+    case ${style} in
+        raw)
+	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE")
+	    ;;
+        full)
+	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | tail -n +2
+	    ;;
+        clean)
+	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | sed -n '1,2b; /^$/q; p'
+	    ;;
+        note)
+	    shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE") | cut -d : -f 4- ;;
+	*)
+	    >&2 echo "ERROR: Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
+	    ;;
+    esac
+    if [[ "${PIPESTATUS[0]}" != 0 ]]; then
+        ## Execute shell command: sc_repl_verify_bind_accept
+        ## Triggered by key sequence: Ctrl-x Ctrl-b 2
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
+    fi
 }
 
 sc_repl_verify_bind_accept() {

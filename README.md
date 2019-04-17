@@ -6,14 +6,11 @@
 ## Examples
 
 ```sh
-$ rm  $files
-
-In /dev/fd/63 line 1:
-rm $files
+$ files="a b c"
+$ echo $files
+echo $files
    ^-- SC2086: Double quote to prevent globbing and word splitting.
-
-$ rm "$files"
-
+$ echo "$files"
 $
 ```
 

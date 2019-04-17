@@ -1,5 +1,21 @@
 # shellcheck-repl
 
+## Version 0.1.0 (2019-04-17)
+
+SIGNIFICANT CHANGES:
+
+ * The license is ISC (by the Internet Software Consortium).
+ 
+NEW FEATURES:
+
+ * Use colored output if the ShellCheck version supports it.
+
+ * Cleaner output by no longer displaying "In /dev/fd/63 line 1:".
+
+ * ShellCheck output can be controlled by setting environment variable
+  `SHELLCHECK_REPL_INFO` to `raw`, `note`, `full` or `clean` (default).
+ 
+
 ## Version 0.0.4 (2019-03-30)
 
 NEW FEATURES:
