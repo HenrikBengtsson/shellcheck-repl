@@ -11,6 +11,7 @@ $ echo $files
 echo $files
    ^-- SC2086: Double quote to prevent globbing and word splitting.
 $ echo "$files"
+a b c
 $
 ```
 
