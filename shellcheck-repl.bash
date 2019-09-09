@@ -15,6 +15,18 @@ version_gt() {
 }
 
 sc_repl_verify_or_unbind() {
+    local skip_pattern
+    local skip_line
+    
+    ## Skip ShellCheck? Default is to skip with leading:
+    ## * !     (history expansion)
+    ## * SPACE (in-house rule)
+    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-[[:space:]\!]}
+    skip_line="${READLINE_LINE##$skip_pattern}"
+    if [[ "$READLINE_LINE" != "$skip_line" ]]; then
+	return
+    fi
+    
     local opts=("--shell=bash" "--external-sources")
     if [[ -n "${SHELLCHECK_REPL_EXCLUDE}" ]]; then
         opts+=("--exclude=${SHELLCHECK_REPL_EXCLUDE}")
@@ -47,6 +59,14 @@ sc_repl_verify_or_unbind() {
 	    ;;
     esac
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
+	>&2 echo
+	>&2 echo "To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g."
+	>&2 echo
+	>&2 echo "  export SHELLCHECK_REPL_EXCLUDE=\"\${SHELLCHECK_REPL_EXCLUDE},4038\""
+	>&2 echo
+	>&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
+	>&2 echo
+
         ## Execute shell command: sc_repl_verify_bind_accept
         ## Triggered by key sequence: Ctrl-x Ctrl-b 2
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
@@ -84,7 +104,7 @@ sc_repl_setup() {
     ## SC2034: 'var' appears unused. Verify it or export it.
     ## SC2154: 'var' is referenced but not assigned.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-    SHELLCHECK_REPL_EXCLUDE=1001,2034,2154,2164
+    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,2034,2154,2164}
     sc_repl_enable
 }
 
