@@ -1,12 +1,17 @@
 # shellcheck-repl
 
-## Version 0.1.0-9000 (2019-09-08)
+## Version 0.1.0-9000 (2019-09-09)
 
 NEW FEATURES:
 
  * ShellCheck validation can be disable for the current line by adding one or
    more leading spaces, i.e. `ls -l` will be validated but ` ls -l` will not.
- 
+   This skip rule can be customize via SHELLCHECK_REPL_SKIP_PATTERN which
+   defaults to "[[:space:]\!]", i.e. a leading space or exclamation mark.
+   
+ * ShellCheck validation is now skipped for history expansion via exclamation
+   marks (!), e.g. `!1984` will neither be validated nor give an error.
+   
 
 ## Version 0.1.0 (2019-04-17)
 
