@@ -16,6 +16,9 @@ a b c
 $
 ```
 
+Hint: See [SC2086] for more details on that error.
+
+
 ## Bypassing the ShellCheck validation
 
 You can bypass the ShellCheck validation by preceeding the command with one or more leading spaces.  For instance, the following will _not_ be run through ShellCheck:
@@ -25,6 +28,25 @@ $  echo $files
 a b c
 $
 ```
+
+
+## Configuring what ShellCheck rules to ignore
+
+Some of the ShellCheck rules may be too tedious to follow when on the command line.  For example, when trying to change directory to a non-existing directory, `cd` will produce a non-zero exit code.  If you do not handle this type of error in a script, ShellCheck will report on [SC2164];
+```sh
+cd /path/to
+^-- SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+```
+
+The suggestion is really valid for scripts, but for the command line is is just annoying.  Because of this, **shellcheck-repl** disables the check for SC2164 by default.  In addition, it also disables the validation of other ShellCheck rules that are too tedious or simply false-positives when used at the command line:
+
+ * [SC1001]: This \= will be a regular '=' in this context.
+ * [SC2034]: 'var' appears unused. Verify it or export it.
+ * [SC2154]: 'var' is referenced but not assigned.
+ * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+
+This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,2034,2154,2164`.
+
 
 
 
@@ -53,3 +75,8 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 
 [ShellCheck]: https://github.com/koalaman/shellcheck
 [Bash]: https://www.gnu.org/software/bash/
+[SC2086]: https://github.com/koalaman/shellcheck/wiki/SC2086
+[SC1001]: https://github.com/koalaman/shellcheck/wiki/SC1001
+[SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
+[SC2154]: https://github.com/koalaman/shellcheck/wiki/SC2154
+[SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
