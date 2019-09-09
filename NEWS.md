@@ -1,8 +1,11 @@
 # shellcheck-repl
 
-## Version 0.1.0-9000 (2019-04-17)
+## Version 0.1.0-9000 (2019-09-08)
 
- * ...
+NEW FEATURES:
+
+ * ShellCheck validation can be disable for the current line by adding one or
+   more leading spaces, i.e. `ls -l` will be validated but ` ls -l` will not.
  
 
 ## Version 0.1.0 (2019-04-17)
