@@ -1,6 +1,6 @@
 # shellcheck-repl
 
-## Version 0.1.0-9000 (2019-09-09)
+## Version 0.1.1 (2019-09-09)
 
 NEW FEATURES:
 

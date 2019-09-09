@@ -21,7 +21,7 @@ Hint: See [SC2086] for more details on that error.
 
 ## Bypassing the ShellCheck validation
 
-You can bypass the ShellCheck validation by preceeding the command with one or more leading spaces.  For instance, the following will _not_ be run through ShellCheck:
+You can bypass the ShellCheck validation by preceding the command with one or more leading spaces.  For instance, the following will _not_ be run through ShellCheck:
 
 ```sh
 $  echo $files
