@@ -30,7 +30,9 @@ $
 ```
 
 
-## Configuring what ShellCheck rules to ignore
+## Settings
+
+### ShellCheck rules to ignore
 
 Some of the ShellCheck rules may be too tedious to follow when on the command line.  For example, when trying to change directory to a non-existing directory, `cd` will produce a non-zero exit code.  If you do not handle this type of error in a script, ShellCheck will report on [SC2164];
 ```sh
@@ -46,7 +48,6 @@ The suggestion is really valid for scripts, but for the command line is is just 
  * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 
 This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,2034,2154,2164`.
-
 
 
 
