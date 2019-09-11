@@ -43,8 +43,11 @@ sc_repl_verify_or_unbind() {
     local style=${SHELLCHECK_REPL_INFO,,}
     if [[ -z "${style}" ]]; then style="clean"; fi
     case ${style} in
-        raw)
-	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE")
+        raw-tty)
+	    shellcheck "${opts[@]}" --format=tty <(printf '%s\n' "$READLINE_LINE")
+	    ;;
+        raw-gcc)
+	    shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE")
 	    ;;
         full)
 	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | tail -n +2
@@ -106,6 +109,10 @@ sc_repl_setup() {
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
     SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,2034,2154,2164}
     sc_repl_enable
+}
+
+sc_wiki_url() {
+    echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
 sc_repl_setup
