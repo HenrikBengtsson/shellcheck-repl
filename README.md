@@ -4,30 +4,57 @@
 
 [ShellCheck] is a great tool for validating your Unix shell scripts.  It will parse the scripts and warn about mistakes, errors, and potential problems.
 
-This tool - **shellcheck-repl** - brings the same validation to the [Bash] prompt.  It does so by intercepting the command line, validates the entered command line via ShellCheck, and if it is all OK, then the command is evaluated as usual.  However, if there is a mistake, then the command will _not_ be evaluated and an informative error message is instead given.  For example,
+This tool - **shellcheck-repl** - brings the same validation to the [Bash] prompt.  It does so by intercepting the command line, validates the entered command line via ShellCheck, and if it is all OK, then the command is evaluated as usual.  However, if there is a mistake, then the command will _not_ be evaluated and an informative error message is instead given.
+
+Getting instant ShellCheck feedback at the prompt will lower the risk of damaging mistakes but it will also help you become more familiar with Bash and a better Bash user in general.  For example, assume we do:
 
 ```sh
-$ files="a b c"
-$ echo $files
-echo $files
-   ^-- SC2086: Double quote to prevent globbing and word splitting.
-$ echo "$files"
-a b c
-$
+$ words="lorem ipsum dolor"
+$ for w in "$words"; do echo $w; done
 ```
 
-Hint: See [SC2086] for more details on that error.
+Although this looks like a simple for loop, it might now be clear you what the outcome of it will be.  What values will `$w` take?  However, with **shellcheck-repl** enabled, we will get the following if we try call it:
+
+```sh
+$ for w in "$words"; do echo "$w"; done
+           ^-- SC2066: Since you double quoted this, it will
+	       not word split, and the loop will only run once.
+```
+
+So, what [SC2066] suggests is that the output will be a single line `lorem ipsum dolor` and not three words on three separate lines.  We probably meant to use:
+```sh
+$ for w in $words; do echo "$w"; done
+lorem
+ipsum
+dolor
+```
 
 
 ## Bypassing the ShellCheck validation
 
-You can bypass the ShellCheck validation by preceding the command with one or more leading spaces.  For instance, the following will _not_ be run through ShellCheck:
+You can bypass the ShellCheck validation by preceding the command with one or more leading spaces.  For instance, assume we get:
 
 ```sh
-$  echo $files
-a b c
-$
+$ words="lorem ipsum dolor"
+$ echo $words
+       ^-- SC2086: Double quote to prevent globbing and word splitting.
 ```
+Ideally we should call:
+```sh
+$ echo "$words"
+lorem ipsum dolor
+```
+but if we find that too tedious, we can skip the validation by using:
+```sh
+$  echo $words
+lorem ipsum dolor
+```
+
+By the way, one example where [SC2086] is crucial is when you work with filenames.  Using:
+```sh
+$  rm $file
+```
+can be very risk if `$file` contains spaces - you might remove files that you did not intend to remove.
 
 
 ## Settings
@@ -76,6 +103,7 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 
 [ShellCheck]: https://github.com/koalaman/shellcheck
 [Bash]: https://www.gnu.org/software/bash/
+[SC2066]: https://github.com/koalaman/shellcheck/wiki/SC2066
 [SC2086]: https://github.com/koalaman/shellcheck/wiki/SC2086
 [SC1001]: https://github.com/koalaman/shellcheck/wiki/SC1001
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
