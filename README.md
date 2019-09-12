@@ -4,7 +4,7 @@
 
 [ShellCheck] is a great tool for validating your Unix shell scripts.  It will parse the scripts and warn about mistakes, errors, and potential problems.
 
-This tool - **shellcheck-repl** - brings the same validation to the [Bash] prompt.  It does so by intercepting the command line, validates the entered command line via ShellCheck, and if it is all OK, then the command is evaluated as usual.  However, if there is a mistake, then the command will _not_ be evaluated and an informative error message is instead given.
+This tool - **shellcheck-repl** - brings the same validation to the [Bash] read-eval-print loop (REPL), i.e. the [Bash] prompt.  It does so by intercepting the command line, validates the entered command line via ShellCheck, and if it is all OK, then the command is evaluated as usual.  However, if there is a mistake, then the command will _not_ be evaluated and an informative error message is instead given.
 
 Getting instant ShellCheck feedback at the prompt will lower the risk of damaging mistakes but it will also help you become more familiar with Bash and a better Bash user in general.  For example, assume we do:
 
