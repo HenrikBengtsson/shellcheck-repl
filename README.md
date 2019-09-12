@@ -52,7 +52,7 @@ By the way, one example where [SC2086] is crucial is when you work with filename
 ```sh
 $  rm $file
 ```
-can be very risk if `$file` contains spaces - you might remove files that you did not intend to remove.
+can be very risky if `$file` contains spaces - in addition to not removing the file intended, you might end up removing files that you did not intend to remove.
 
 
 ## Settings
