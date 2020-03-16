@@ -104,10 +104,12 @@ sc_repl_setup() {
     sc_version
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
+    ## SC1090: Can't follow non-constant source. Use a directive to specify
+    ##         location.
     ## SC2034: 'var' appears unused. Verify it or export it.
     ## SC2154: 'var' is referenced but not assigned.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,2034,2154,2164}
+    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2164}
     sc_repl_enable
 }
 
