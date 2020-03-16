@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+#' ShellCheck Read-Eval-Print Loop (REPL)
+#'
+#' Validation of Shell Commands Before Evaluation
+#'
+#' Usage/Install:
+#' source shellcheck-repl.bash
+#'
+#' License: ISC
+#' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
+
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
     if [ -z "${SHELLCHECK_VERSION+x}" ]; then
