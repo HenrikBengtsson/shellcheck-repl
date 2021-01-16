@@ -28,9 +28,10 @@ sc_repl_verify_or_unbind() {
     local skip_pattern
     
     ## Skip ShellCheck? Default is to skip with leading:
-    ## * ^!     (history expansion)
-    ## * ^SPACE (in-house rule)
-    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-(^[[:space:]]|^\!)}
+    ## * ^!           (history expansion)
+    ## * ^SPACE       (in-house rule)
+    ## * DOUBLESPACE$ (in-house rule)
+    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-(^[[:space:]]|^\!|[[:space:]][[:space:]]$)}
     if [[ "$READLINE_LINE" =~  $skip_pattern ]]; then
         return
     fi

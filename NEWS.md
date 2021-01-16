@@ -4,8 +4,12 @@
 
 ### NEW FEATURES
 
+ * A blocking ShellCheck warning or error can be overridden by adding two
+   spaces at the end of the line.  The advantage of this over prepending a
+   space at the beginning, is that it the command is preserved in the history.
+
  * `SHELLCHECK_REPL_SKIP_PATTERN` can now be regular expression.  It's new
-   default is now "(^[[:space:]]|^\!)".
+   default is now "(^[[:space:]]|^\!|[[:space:]][[:space:]]$)".
 
  * Ignore also [SC1090] by default to avoid ShellCheck error when trying to
    source a file.
