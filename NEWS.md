@@ -4,16 +4,26 @@
 
 ### NEW FEATURES
 
- * A blocking ShellCheck warning or error can be overridden by adding two
-   spaces at the end of the line.  The advantage of this over prepending a
-   space at the beginning, is that it the command is preserved in the history.
+ * ShellCheck validation can be disable for the current line by adding two or
+   more trailing spaces, i.e. `ls -l` will be validated but `ls -l  ` will not.
+   
+   space at the beginning, is that it the command is preserved in the
+   command-line history.
 
  * `SHELLCHECK_REPL_SKIP_PATTERN` can now be regular expression.  It's new
-   default is now "(^[[:space:]]|^\!|[[:space:]][[:space:]]$)".
+   default is now "(^\!|[[:space:]][[:space:]]$)".
 
  * Ignore also [SC1090] by default to avoid ShellCheck error when trying to
    source a file.
-   
+
+### DEFUNCT
+
+ * Support for disabling of ShellCheck validation by adding a *leading* space
+   has been removed in favor of *two trailing spaces*.  The reason for this
+   change is because the use leading spaces for this purpose conflicts with
+   how `HISTCONTROL=ignorespace`, or `ignoredups`, prevents the call from
+   being added to the command-line history.
+
 
 ## Version 0.1.1 (2019-09-09)
 
