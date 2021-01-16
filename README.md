@@ -30,7 +30,7 @@ dolor
 
 ## Bypassing the ShellCheck validation
 
-You can bypass the ShellCheck validation by preceding the command with one or more leading spaces.  For instance, assume we get:
+You can bypass the ShellCheck validation by appending two spaces to the command with.  For instance, assume we get:
 
 ```sh
 $ words="lorem ipsum dolor"
@@ -42,15 +42,15 @@ Ideally we should call:
 $ echo "$words"
 lorem ipsum dolor
 ```
-but if we find that too tedious, we can skip the validation by using:
+but if we find that too tedious, we can skip the validation by appending two or more spaces at the end:
 ```sh
-$  echo $words
+$ echo $words␣␣
 lorem ipsum dolor
 ```
 
 By the way, one example where [SC2086] is crucial is when you work with filenames.  Using:
 ```sh
-$  rm $file
+$ rm $file␣␣
 ```
 can be very risky if `$file` contains spaces - in addition to not removing the file intended, you might end up removing files that you did not intend to remove.
 
