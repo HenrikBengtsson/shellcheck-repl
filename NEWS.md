@@ -1,8 +1,11 @@
 # shellcheck-repl
 
-## Version 0.1.1-9000 (2020-03-15)
+## Version 0.1.1-9000 (2021-01-16)
 
 ### NEW FEATURES
+
+ * `SHELLCHECK_REPL_SKIP_PATTERN` can now be regular expression.  It's new
+   default is now "(^[[:space:]]|^\!)".
 
  * Ignore also [SC1090] by default to avoid ShellCheck error when trying to
    source a file.

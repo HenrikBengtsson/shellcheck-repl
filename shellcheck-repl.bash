@@ -26,15 +26,13 @@ version_gt() {
 
 sc_repl_verify_or_unbind() {
     local skip_pattern
-    local skip_line
     
     ## Skip ShellCheck? Default is to skip with leading:
-    ## * !     (history expansion)
-    ## * SPACE (in-house rule)
-    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-[[:space:]\!]}
-    skip_line="${READLINE_LINE##$skip_pattern}"
-    if [[ "$READLINE_LINE" != "$skip_line" ]]; then
-	return
+    ## * ^!     (history expansion)
+    ## * ^SPACE (in-house rule)
+    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-(^[[:space:]]|^\!)}
+    if [[ "$READLINE_LINE" =~  $skip_pattern ]]; then
+        return
     fi
     
     local opts=("--shell=bash" "--external-sources")
