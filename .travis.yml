@@ -3,12 +3,13 @@
 language: bash
 
 env:
-  - SHELLCHECK_VERSION=0.6.0
+  - SHELLCHECK_VERSION=0.7.1
 
 before_script:
   - bash --version
   - shellcheck --version
-  - curl "https://storage.googleapis.com/shellcheck/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz" | tar xJ
+  - curl -L "https://github.com/koalaman/shellcheck/releases/download/v$SHELLCHECK_VERSION/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz" | tar xJ
+  - PATH="shellcheck-v$SHELLCHECK_VERSION:$PATH" shellcheck --version
 
 script:
   - make check

@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+#' ShellCheck Read-Eval-Print Loop (REPL)
+#'
+#' Validation of Shell Commands Before Evaluation
+#'
+#' Usage/Install:
+#' source shellcheck-repl.bash
+#'
+#' License: ISC
+#' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
+
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
     if [ -z "${SHELLCHECK_VERSION+x}" ]; then
@@ -16,15 +26,13 @@ version_gt() {
 
 sc_repl_verify_or_unbind() {
     local skip_pattern
-    local skip_line
     
     ## Skip ShellCheck? Default is to skip with leading:
-    ## * !     (history expansion)
-    ## * SPACE (in-house rule)
-    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-[[:space:]\!]}
-    skip_line="${READLINE_LINE##$skip_pattern}"
-    if [[ "$READLINE_LINE" != "$skip_line" ]]; then
-	return
+    ## * ^!           (history expansion)
+    ## * DOUBLESPACE$ (in-house rule)
+    skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-(^\!|[[:space:]][[:space:]]$)}
+    if [[ "$READLINE_LINE" =~  $skip_pattern ]]; then
+        return
     fi
     
     local opts=("--shell=bash" "--external-sources")
@@ -43,8 +51,11 @@ sc_repl_verify_or_unbind() {
     local style=${SHELLCHECK_REPL_INFO,,}
     if [[ -z "${style}" ]]; then style="clean"; fi
     case ${style} in
-        raw)
-	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE")
+        raw-tty)
+	    shellcheck "${opts[@]}" --format=tty <(printf '%s\n' "$READLINE_LINE")
+	    ;;
+        raw-gcc)
+	    shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE")
 	    ;;
         full)
 	    shellcheck "${opts[@]}" <(printf '%s\n' "$READLINE_LINE") | tail -n +2
@@ -65,6 +76,8 @@ sc_repl_verify_or_unbind() {
 	>&2 echo "  export SHELLCHECK_REPL_EXCLUDE=\"\${SHELLCHECK_REPL_EXCLUDE},4038\""
 	>&2 echo
 	>&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
+	>&2 echo
+	>&2 echo "To skip ShellCheck validation for this call, append two spaces"
 	>&2 echo
 
         ## Execute shell command: sc_repl_verify_bind_accept
@@ -101,11 +114,17 @@ sc_repl_setup() {
     sc_version
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
+    ## SC1090: Can't follow non-constant source. Use a directive to specify
+    ##         location.
     ## SC2034: 'var' appears unused. Verify it or export it.
     ## SC2154: 'var' is referenced but not assigned.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,2034,2154,2164}
+    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2164}
     sc_repl_enable
+}
+
+sc_wiki_url() {
+    echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
 sc_repl_setup
