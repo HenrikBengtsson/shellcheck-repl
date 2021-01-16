@@ -8,7 +8,7 @@ env:
 before_script:
   - bash --version
   - shellcheck --version
-  - curl "https://github.com/koalaman/shellcheck/releases/download/v0.6.0/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz" | tar xJ
+  - curl -L "https://github.com/koalaman/shellcheck/releases/download/v$SHELLCHECK_VERSION/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz" | tar xJ
 
 script:
   - make check
