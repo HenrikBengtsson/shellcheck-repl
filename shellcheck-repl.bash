@@ -77,6 +77,8 @@ sc_repl_verify_or_unbind() {
 	>&2 echo
 	>&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
 	>&2 echo
+	>&2 echo "To skip ShellCheck validation for this call, append two spaces"
+	>&2 echo
 
         ## Execute shell command: sc_repl_verify_bind_accept
         ## Triggered by key sequence: Ctrl-x Ctrl-b 2
