@@ -4,14 +4,14 @@
 
 [ShellCheck] is a great tool for validating your Unix shell scripts.  It will parse the scripts and warn about mistakes, errors, and potential problems.  This tool - **shellcheck-repl** - brings ShellCheck validation to the [Bash] read-eval-print loop (REPL), i.e. the [Bash] prompt.  Getting this type of validation and feedback at the prompt lowers the risk of damaging mistakes and will help you become a better Bash user and developer.
  
-The **shellcheck-repl** tool injects itself into the Bash REPL where it intercepts the read command line, validates the content via ShellCheck, and if it is all OK, then the command is evaluated and printed as usual.  However, if there is a mistake, then the command will _not_ be evaluated and an informative error message is instead printed.  For example, assume we do:
+The **shellcheck-repl** tool injects itself into the Bash REPL where it intercepts the read command line, validates the content via ShellCheck, and if it is all OK, then the command is evaluated and printed as usual.  However, if there is a mistake, then the command will _not_ be evaluated and an informative error message is displayed instead.  For example, assume we do:
 
 ```sh
 $ words="lorem ipsum dolor"
 $ for w in "$words"; do echo $w; done
 ```
 
-Although this looks like a simple for loop, it might now be clear you what the outcome of it will be.  What values will `$w` take?  However, with **shellcheck-repl** enabled, we will get the following if we try call it:
+Although this looks like a simple for loop, it might not be clear to you what the outcome of it will be.  What values will `$w` take?  However, with **shellcheck-repl** enabled, we will get the following if we try call it:
 
 ```sh
 $ for w in "$words"; do echo "$w"; done
