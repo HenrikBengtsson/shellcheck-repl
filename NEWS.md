@@ -1,9 +1,12 @@
 # shellcheck-repl
 
-## Version 0.1.2-9000 (2021-01-16)
+## Version 0.1.2-9000 (2021-02-05)
 
- * ...
- 
+### NEW FEATURES
+
+ * Ignore also [SC2155] by default to allow for 'export FOO=$(something)'.
+
+
 ## Version 0.1.2 (2021-01-16)
 
 ### NEW FEATURES
@@ -90,3 +93,4 @@
 
 
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
+[SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155

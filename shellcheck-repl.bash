@@ -118,8 +118,9 @@ sc_repl_setup() {
     ##         location.
     ## SC2034: 'var' appears unused. Verify it or export it.
     ## SC2154: 'var' is referenced but not assigned.
+    ## SC2155: Declare and assign separately to avoid masking return values.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2164}
+    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2155,2164}
     sc_repl_enable
 }
 
