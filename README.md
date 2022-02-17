@@ -55,6 +55,21 @@ $ rm $file␣␣
 can be very risky if `$file` contains spaces - in addition to not removing the file intended, you might end up removing files that you did not intend to remove.
 
 
+## Disable and enable checks
+
+To disable the ShellCheck REPL tool, do:
+
+```sh
+$ sc_repl_disable
+```
+
+To reenable it, do:
+
+```sh
+$ sc_repl_enable
+```
+
+
 ## Settings
 
 ### ShellCheck rules to ignore
@@ -74,7 +89,6 @@ The suggestion is really valid for scripts, but for the command line is is just 
  * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 
 This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,2034,2154,2164`.
-
 
 
 ## Requirements
