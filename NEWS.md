@@ -1,5 +1,14 @@
 # shellcheck-repl
 
+## Version 0.1.2-9001 (2022-01-17)
+
+### NEW FEATURES
+
+ * The tool now asserts that 'shellcheck' can be found before enabling.
+   It also asserts that the internal Bash functions needed for the key
+   bindings exists.
+ 
+
 ## Version 0.1.2 (2021-01-16)
 
 ### NEW FEATURES

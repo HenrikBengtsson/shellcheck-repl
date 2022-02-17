@@ -9,6 +9,7 @@
 #'
 #' License: ISC
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
+#' Version: 0.1.2-9001
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
@@ -23,6 +24,27 @@ sc_version() {
 version_gt() {
     test "$(printf '%s\n' "$@" | sort --version-sort | head -n 1)" != "$1"
 }
+
+sc_assert_shellcheck() {
+    if ! command -v shellcheck &> /dev/null; then
+	echo >&2 "ERROR: 'shellcheck' not found"
+	return 1
+    fi
+    return 0
+}
+
+sc_assert_bash_fcn() {
+    if ! bind -l | grep -q -E "^${1:?}$"; then
+	echo >&2 "ERROR: No such bash function: ${1}"
+	return 1
+    fi
+    return 0
+}
+
+sc_asserts() {
+    sc_assert_shellcheck &&
+    sc_assert_bash_fcn "accept-line"
+}    
 
 sc_repl_verify_or_unbind() {
     local skip_pattern
@@ -112,6 +134,8 @@ sc_repl_disable() {
 
 sc_repl_setup() {
     sc_version
+    sc_asserts && return $?
+    
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
     ## SC1090: Can't follow non-constant source. Use a directive to specify
@@ -120,7 +144,7 @@ sc_repl_setup() {
     ## SC2154: 'var' is referenced but not assigned.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
     SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2164}
-    sc_repl_enable
+#    sc_repl_enable
 }
 
 sc_wiki_url() {
