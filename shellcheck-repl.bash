@@ -64,7 +64,8 @@ sc_repl_bind_has_option_X() {
 sc_repl_assert_keybind_exists() {
     sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ..."
     ## Skip tests if 'bind -X' is not supported
-    ## Note, 'bind -X' is available in Bash 4.4.20, but not in 4.2.26
+    ## Note, 'bind -X' is available in Bash 4.4.20 (2016-08-26),
+    ## but not in 4.2.26 (2010-12-28).
     if ! sc_repl_bind_has_option_X; then
         sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
 	return 0
