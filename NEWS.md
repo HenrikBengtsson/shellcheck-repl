@@ -1,19 +1,16 @@
 # shellcheck-repl
 
-## Version 0.1.2-9001 (2022-02-17)
+## Version 0.1.3 (2022-02-17)
 
 ### NEW FEATURES
 
  * Ignore also [SC2155] by default to allow for 'export FOO=$(something)'.
 
- * The tool now asserts that 'shellcheck' can be found before enabling.
+ * The tool now asserts that Bash (>= 4.4) and 'shellcheck' are available.
 
+ * Add internal assertions.
+ 
  * Add a debug mechanism for troubleshooting purposes.
-
-### DOCUMENTATION
-
- * Add requirement Bash (>= 4.4) to README. The required version was not
-   previously known.
 
 
 ## Version 0.1.2 (2021-01-16)
