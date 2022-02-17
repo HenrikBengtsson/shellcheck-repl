@@ -33,7 +33,7 @@ sc_assert_shellcheck() {
     return 0
 }
 
-sc_assert_bash_fcn() {
+sc_assert_readline_fcn_exists() {
     if ! bind -l | grep -q -E "^${1:?}$"; then
 	echo >&2 "ERROR: No such bash function: ${1}"
 	return 1
@@ -43,7 +43,7 @@ sc_assert_bash_fcn() {
 
 sc_asserts() {
     sc_assert_shellcheck &&
-    sc_assert_bash_fcn "accept-line"
+    sc_assert_readline_fcn_exists "accept-line"
 }    
 
 sc_repl_verify_or_unbind() {
@@ -144,13 +144,8 @@ sc_repl_setup() {
     ## SC2154: 'var' is referenced but not assigned.
     ## SC2155: Declare and assign separately to avoid masking return values.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-<<<<<<< HEAD
     SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2155,2164}
     sc_repl_enable
-=======
-    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2164}
-#    sc_repl_enable
->>>>>>> master
 }
 
 sc_wiki_url() {
