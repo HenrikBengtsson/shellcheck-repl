@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/HenrikBengtsson/shellcheck-repl.svg?branch=master)](https://travis-ci.org/HenrikBengtsson/shellcheck-repl)
+[![shellcheck](https://github.com/HenrikBengtsson/shellcheck-repl/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/shellcheck-repl/actions/workflows/shellcheck.yml)
 
-# shellcheck-repl: Validation of Shell Commands Before Evaluation
+# Shellcheck REPL: Validation of Shell Commands Before Evaluation
 
 [ShellCheck] is a great tool for validating your Unix shell scripts.  It will parse the scripts and warn about mistakes, errors, and potential problems.  This tool - **shellcheck-repl** - brings ShellCheck validation to the [Bash] read-eval-print loop (REPL), i.e. the [Bash] prompt.  Getting this type of validation and feedback at the prompt lowers the risk of damaging mistakes and will help you become a better Bash user and developer.
  
