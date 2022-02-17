@@ -41,6 +41,18 @@ sc_repl_error() {
     return 1
 }    
 
+sc_repl_assert_bash_version() {
+    if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
+        sc_repl_error "ShellCheck REPL requires Bash (>= 4.4): ${BASH_VERSION}"
+        return 1
+    fi
+    if [[ "${BASH_VERSINFO[0]}" -eq 4 ]] && [[ "${BASH_VERSINFO[1]}" -lt 4 ]]; then
+        sc_repl_error "ShellCheck REPL requires Bash (>= 4.4): ${BASH_VERSION}"
+        return 1
+    fi
+    return 0
+}
+                       
 sc_repl_assert_shellcheck() {
     if ! command -v shellcheck &> /dev/null; then
 	sc_repl_error "'shellcheck' not found"
@@ -57,15 +69,16 @@ sc_repl_assert_readline_fcn_exists() {
     return 0
 }
 
+## Function to check whether 'bind -X' is available
+## It available in Bash 4.3 (2014-02-26)
+## It is not available in 4.2.53 (2014-11-07)
 sc_repl_bind_has_option_X() {
-    bind -X 2> /dev/null
+    bind -X &> /dev/null
 }
 
 sc_repl_assert_keybind_exists() {
     sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ..."
     ## Skip tests if 'bind -X' is not supported
-    ## Note, 'bind -X' is available in Bash 4.4.20 (2016-08-26),
-    ## but not in 4.2.26 (2010-12-28).
     if ! sc_repl_bind_has_option_X; then
         sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
 	return 0
@@ -82,9 +95,12 @@ sc_repl_assert_keybind_exists() {
 
 sc_repl_asserts() {
     sc_repl_debug "sc_repl_asserts() ..."
+    sc_repl_assert_bash_version &&
     sc_repl_assert_shellcheck &&
     sc_repl_assert_readline_fcn_exists "accept-line"
+    res=$?
     sc_repl_debug "sc_repl_asserts() ... done"
+    return ${res}
 }    
 
 sc_repl_verify_or_unbind() {
@@ -196,8 +212,8 @@ sc_repl_setup() {
     sc_repl_debug "sc_repl_setup() ..."
     sc_version
     if ! sc_repl_asserts; then
-        scl_repl_error "ShellCheck REPL startup assertions failed"
-        return 2
+        sc_repl_error "ShellCheck REPL startup assertions failed"
+        return 1
     fi
     
     ## Ignore some ShellCheck issues:

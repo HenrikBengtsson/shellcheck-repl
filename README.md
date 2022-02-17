@@ -80,7 +80,7 @@ This set of rules that are disabled by default can be configured via environment
 ## Requirements
 
 * [ShellCheck]
-* [Bash] (the only supported shell right now)
+* [Bash] (>= 4.4) (the only supported shell right now)
 
 
 ## Installation

@@ -9,7 +9,12 @@
  * The tool now asserts that 'shellcheck' can be found before enabling.
 
  * Add a debug mechanism for troubleshooting purposes.
- 
+
+### DOCUMENTATION
+
+ * Add requirement Bash (>= 4.4) to README. The required version was not
+   previously known.
+
 
 ## Version 0.1.2 (2021-01-16)
 
