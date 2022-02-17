@@ -25,7 +25,7 @@ version_gt() {
     test "$(printf '%s\n' "$@" | sort --version-sort | head -n 1)" != "$1"
 }
 
-sc_assert_shellcheck() {
+sc_repl_assert_shellcheck() {
     if ! command -v shellcheck &> /dev/null; then
 	echo >&2 "ERROR: 'shellcheck' not found"
 	return 1
@@ -33,7 +33,7 @@ sc_assert_shellcheck() {
     return 0
 }
 
-sc_assert_readline_fcn_exists() {
+sc_repl_assert_readline_fcn_exists() {
     if ! bind -l | grep -q -E "^${1:?}$"; then
 	echo >&2 "ERROR: No such bash function: ${1}"
 	return 1
@@ -41,9 +41,17 @@ sc_assert_readline_fcn_exists() {
     return 0
 }
 
-sc_asserts() {
-    sc_assert_shellcheck &&
-    sc_assert_readline_fcn_exists "accept-line"
+sc_repl_assert_keybind_exists() {
+    if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
+	echo >&2 "ERROR: No such keybinding: ${1}"
+	return 1
+    fi
+    return 0
+}
+
+sc_repl_asserts() {
+    sc_repl_assert_shellcheck &&
+    sc_repl_assert_readline_fcn_exists "accept-line"
 }    
 
 sc_repl_verify_or_unbind() {
@@ -105,6 +113,7 @@ sc_repl_verify_or_unbind() {
         ## Execute shell command: sc_repl_verify_bind_accept
         ## Triggered by key sequence: Ctrl-x Ctrl-b 2
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
+        sc_repl_assert_keybind_exists "\C-x\C-b2"
     fi
 }
 
@@ -112,6 +121,7 @@ sc_repl_verify_bind_accept() {
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-x Ctrl-b 2
     bind '"\C-x\C-b2": accept-line'
+    sc_repl_assert_keybind_exists "\C-x\C-b2"
 }
 
 sc_repl_enable() {
@@ -120,21 +130,24 @@ sc_repl_enable() {
     ## Execute shell command: sc_repl_verify_or_unbind()
     ## Triggered by key sequence: Ctrl-x Ctrl-b 1
     bind -x '"\C-x\C-b1": sc_repl_verify_or_unbind'
+    sc_repl_assert_keybind_exists "\C-x\C-b1"
     
     ## Execute keystrokes: Ctrl-x Ctrl-b 1 Ctrl-x Ctrl-b 2
     ## Triggered by key sequence: Ctrl-m (Carriage Return)
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
+    sc_repl_assert_keybind_exists "\C-m"
 }
 
 sc_repl_disable() {
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-m (Carriage Return)
     bind '"\C-m": accept-line'
+    sc_repl_assert_keybind_exists "\C-m"
 }
 
 sc_repl_setup() {
     sc_version
-    sc_asserts && return $?
+    sc_repl_asserts && return $?
     
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
