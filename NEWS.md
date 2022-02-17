@@ -1,11 +1,17 @@
 # shellcheck-repl
 
-## Version 0.1.2-9000 (2021-02-05)
+## Version 0.1.2-9001 (2022-02-17)
 
 ### NEW FEATURES
 
  * Ignore also [SC2155] by default to allow for 'export FOO=$(something)'.
 
+### ROBUSTNESS
+
+ * The tool now asserts that 'shellcheck' can be found before enabling.
+   It also asserts that the internal Bash functions needed for the key
+   bindings exists.
+ 
 
 ## Version 0.1.2 (2021-01-16)
 
