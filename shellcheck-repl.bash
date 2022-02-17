@@ -13,21 +13,37 @@
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
+    sc_repl_debug "sc_version() ..."    
     if [ -z "${SHELLCHECK_VERSION+x}" ]; then
         # Example: '0.4.6'
         SHELLCHECK_VERSION=$(shellcheck --version | sed -nE 's/version: +(.+)/\1/p')
         # Example: '0.4'
         SHELLCHECK_VERSION_X_Y="${SHELLCHECK_VERSION%.*}"
     fi
+    sc_repl_debug " - SHELLCHECK_VERSION: ${SHELLCHECK_VERSION}"
+    sc_repl_debug " - SHELLCHECK_VERSION_X_Y: ${SHELLCHECK_VERSION_X_Y}"
+    sc_repl_debug "sc_version() ... done"
 }
 
 version_gt() {
     test "$(printf '%s\n' "$@" | sort --version-sort | head -n 1)" != "$1"
 }
 
+SC_REPL_DEBUG=${SC_REPL_DEBUG:-false}
+
+sc_repl_debug() {
+    $SC_REPL_DEBUG || return 0
+    echo >&2 "DEBUG: ${*}"
+}
+
+sc_repl_error() {
+    echo >&2 "ERROR: ${*}"
+    return 1
+}    
+
 sc_repl_assert_shellcheck() {
     if ! command -v shellcheck &> /dev/null; then
-	echo >&2 "ERROR: 'shellcheck' not found"
+	sc_repl_error "'shellcheck' not found"
 	return 1
     fi
     return 0
@@ -35,7 +51,7 @@ sc_repl_assert_shellcheck() {
 
 sc_repl_assert_readline_fcn_exists() {
     if ! bind -l | grep -q -E "^${1:?}$"; then
-	echo >&2 "ERROR: No such bash function: ${1}"
+	sc_repl_error "No such bash function: ${1}"
 	return 1
     fi
     return 0
@@ -43,25 +59,31 @@ sc_repl_assert_readline_fcn_exists() {
 
 sc_repl_assert_keybind_exists() {
     if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
-	echo >&2 "ERROR: No such keybinding: ${1}"
+	sc_repl_error "No such keybinding: ${1}"
 	return 1
     fi
     return 0
 }
 
 sc_repl_asserts() {
+    sc_repl_debug "sc_repl_asserts() ..."
     sc_repl_assert_shellcheck &&
     sc_repl_assert_readline_fcn_exists "accept-line"
+    sc_repl_debug "sc_repl_asserts() ... done"
 }    
 
 sc_repl_verify_or_unbind() {
     local skip_pattern
+
+    sc_repl_debug "sc_repl_verify_or_unbind() ..."
     
     ## Skip ShellCheck? Default is to skip with leading:
     ## * ^!           (history expansion)
     ## * DOUBLESPACE$ (in-house rule)
     skip_pattern=${SHELLCHECK_REPL_SKIP_PATTERN:-(^\!|[[:space:]][[:space:]]$)}
     if [[ "$READLINE_LINE" =~  $skip_pattern ]]; then
+        sc_repl_debug " - skipping because it matches SHELLCHECK_REPL_SKIP_PATTERN=${SHELLCHECK_REPL_SKIP_PATTERN}"
+        sc_repl_debug "sc_repl_verify_or_unbind() ... done"
         return
     fi
     
@@ -79,6 +101,8 @@ sc_repl_verify_or_unbind() {
     fi
     # Filter the output of shellcheck by removing filename
     local style=${SHELLCHECK_REPL_INFO,,}
+    sc_repl_debug " - style: ${style}"
+    sc_repl_debug " - ShellCheck options: ${opts[*]}"
     if [[ -z "${style}" ]]; then style="clean"; fi
     case ${style} in
         raw-tty)
@@ -96,7 +120,7 @@ sc_repl_verify_or_unbind() {
         note)
 	    shellcheck "${opts[@]}" --format=gcc <(printf '%s\n' "$READLINE_LINE") | cut -d : -f 4- ;;
 	*)
-	    >&2 echo "ERROR: Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
+            sc_repl_error "Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
 	    ;;
     esac
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
@@ -115,16 +139,21 @@ sc_repl_verify_or_unbind() {
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
         sc_repl_assert_keybind_exists "\C-x\C-b2"
     fi
+    
+    sc_repl_debug "sc_repl_verify_or_unbind() ... done"
 }
 
 sc_repl_verify_bind_accept() {
+    sc_repl_debug "sc_repl_verify_bind_accept() ..."
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-x Ctrl-b 2
     bind '"\C-x\C-b2": accept-line'
     sc_repl_assert_keybind_exists "\C-x\C-b2"
+    sc_repl_debug "sc_repl_verify_bind_accept() ... done"
 }
 
 sc_repl_enable() {
+    sc_repl_debug "sc_repl_enable() ..."
     sc_repl_verify_bind_accept
 
     ## Execute shell command: sc_repl_verify_or_unbind()
@@ -135,19 +164,26 @@ sc_repl_enable() {
     ## Execute keystrokes: Ctrl-x Ctrl-b 1 Ctrl-x Ctrl-b 2
     ## Triggered by key sequence: Ctrl-m (Carriage Return)
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
-    sc_repl_assert_keybind_exists "\C-m"
+#    sc_repl_assert_keybind_exists "\C-m"
+    sc_repl_debug "sc_repl_enable() ... done"
 }
 
 sc_repl_disable() {
+    sc_repl_debug "sc_repl_disable() ..."
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-m (Carriage Return)
     bind '"\C-m": accept-line'
     sc_repl_assert_keybind_exists "\C-m"
+    sc_repl_debug "sc_repl_disable() ... done"
 }
 
 sc_repl_setup() {
+    sc_repl_debug "sc_repl_setup() ..."
     sc_version
-    sc_repl_asserts && return $?
+    if ! sc_repl_asserts; then
+        scl_repl_error "ShellCheck REPL startup assertions failed"
+        return 2
+    fi
     
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
@@ -158,7 +194,9 @@ sc_repl_setup() {
     ## SC2155: Declare and assign separately to avoid masking return values.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
     SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-1001,1090,2034,2154,2155,2164}
+    sc_repl_debug "- SHELLCHECK_REPL_EXCLUDE: ${SHELLCHECK_REPL_EXCLUDE}"
     sc_repl_enable
+    sc_repl_debug "sc_repl_setup() ... done"
 }
 
 sc_wiki_url() {

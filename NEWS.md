@@ -6,11 +6,9 @@
 
  * Ignore also [SC2155] by default to allow for 'export FOO=$(something)'.
 
-### ROBUSTNESS
-
  * The tool now asserts that 'shellcheck' can be found before enabling.
-   It also asserts that the internal Bash functions needed for the key
-   bindings exists.
+
+ * Add a debug mechanism for troubleshooting purposes.
  
 
 ## Version 0.1.2 (2021-01-16)
