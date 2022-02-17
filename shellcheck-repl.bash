@@ -57,11 +57,25 @@ sc_repl_assert_readline_fcn_exists() {
     return 0
 }
 
+sc_repl_bind_has_option_X() {
+    bind -X 2> /dev/null
+}
+
 sc_repl_assert_keybind_exists() {
+    sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ..."
+    ## Skip tests if 'bind -X' is not supported
+    ## Note, 'bind -X' is available in Bash 4.4.20, but not in 4.2.26
+    if ! sc_repl_bind_has_option_X; then
+        sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
+	return 0
+    fi
+    
     if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
 	sc_repl_error "No such keybinding: ${1}"
+        sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... ERROR"
 	return 1
     fi
+    sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... OK"
     return 0
 }
 
