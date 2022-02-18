@@ -149,38 +149,32 @@ sc_repl_verify_or_unbind() {
     fi
     # Filter the output of shellcheck by removing filename
     style=${SHELLCHECK_REPL_INFO,,}
+    if [[ -z "${style}" ]]; then style="clean"; fi
     sc_repl_debug " - style: ${style}"
     sc_repl_debug " - ShellCheck options: ${opts[*]}"
     sc_repl_debug " - READLINE_LINE: ${READLINE_LINE}"
 
+    ## Identify variables to be included in preamble
+    vars=()
     if [[ ! "$SHELLCHECK_REPL_EXCLUDE" == *2154* ]]; then
         sc_repl_debug " - Special case: Checking with rule SC2154"
-        ## Version 1:
-        # input=$(declare -p)
-        # input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
-        
-        ## Version 2: (only slightly faster)
-        ## Prune 'declare -p' output to speedup shellcheck
-        # input=$(declare -p | sed -E 's/^declare -([-irx]+) ([^=*]+)="(.*)"/declare -\1 \2=""/g' | sed -E 's/^declare -([aA]+) ([^=*]+)=[(](.*)[)]/declare -\1 \2=()/g')        
-        # input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
-
-        ## Version 3: (much faster; almost as faster with disable=SC2154)
         ## Ask shellcheck to identify variables of interest
         mapfile -t vars < <(shellcheck --shell=bash --format=gcc --exclude="${SHELLCHECK_REPL_EXCLUDE}" <(echo "$READLINE_LINE") | grep -F "[SC2154]" | sed -E 's/.*: ([^ ]+) .*/\1/')
-        if [[ ${#vars[@]} -gt 0 ]]; then
-            ## 'declare -p' dump only those
-            input=$(declare -p "${vars[@]}" 2> /dev/null)
-            input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\ntrue\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
-        else
-            input=$READLINE_LINE
-        fi
+    fi
+
+    sc_repl_debug " - Variables: [n=${#vars[@]}] ${vars[*]}"
+    
+    ## Are there any variables involved?
+    if [[ ${#vars[@]} -gt 0 ]]; then
+        ## 'declare -p' dump only those
+        input=$(declare -p "${vars[@]}" 2> /dev/null)
+        input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\ntrue\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
     else
         input=$READLINE_LINE
     fi
-    sc_repl_debug " - ShellCheck input: $(echo "${input}" | wc -l) lines"
     
-    if [[ -z "${style}" ]]; then style="clean"; fi
 
+    sc_repl_debug " - ShellCheck input: $(echo "${input}" | wc -l) lines"
     start_time=$(date +%s%N)    
     case ${style} in
         raw-tty)
