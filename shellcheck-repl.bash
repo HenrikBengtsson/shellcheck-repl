@@ -203,7 +203,6 @@ sc_repl_verify_or_unbind() {
             sc_repl_error "Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
 	    ;;
     esac
-    end_time=$(date +%s%N)
     
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
 	>&2 echo
@@ -222,6 +221,8 @@ sc_repl_verify_or_unbind() {
         sc_repl_assert_keybind_exists "\C-x\C-b2"
     fi
 
+    end_time=$(date +%s%N)
+    
     sc_repl_debug " - check time: $(((end_time - start_time) / 1000000)) ms"
 
     sc_repl_debug "sc_repl_verify_or_unbind() ... done"
