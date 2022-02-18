@@ -121,6 +121,7 @@ sc_repl_verify_or_unbind() {
     local style
     local start_time
     local end_time
+    local res
     
     sc_repl_debug "sc_repl_verify_or_unbind() ..."
     
@@ -156,13 +157,19 @@ sc_repl_verify_or_unbind() {
         sc_repl_debug " - Special case: SC2154 are not disabled"
         ## Version 1:
         # input=$(declare -p)
-        #input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
+        # input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
         
-        ## Version 2:
-        ## Prune 'declare -p' output to speedup shellcheck (~20%)
-        input=$(declare -p | sed -E 's/^declare -([-irx]+) ([^=*]+)="(.*)"/declare -\1 \2=""/g' | sed -E 's/^declare -([aA]+) ([^=*]+)=[(](.*)[)]/declare -\1 \2=()/g')        
-        input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
-        echo "${input}" > /tmp/input.txt
+        ## Version 2: (only slightly faster)
+        ## Prune 'declare -p' output to speedup shellcheck
+        # input=$(declare -p | sed -E 's/^declare -([-irx]+) ([^=*]+)="(.*)"/declare -\1 \2=""/g' | sed -E 's/^declare -([aA]+) ([^=*]+)=[(](.*)[)]/declare -\1 \2=()/g')        
+        # input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
+
+        ## Version 3: (much faster; almost as faster with disable=SC2154)
+        ## Ask shellcheck to identify variables of interest
+        mapfile -t vars < <(shellcheck --shell=bash --format=gcc --exclude="${SHELLCHECK_REPL_EXCLUDE}" <(echo "$READLINE_LINE") | grep -F "[SC2154]" | sed -E 's/.*: ([^ ]+) .*/\1/')
+        ## 'declare -p' dump only those
+        input=$(declare -p "${vars[@]}" 2> /dev/null)
+        input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\ntrue\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
     else
         input=$READLINE_LINE
     fi
