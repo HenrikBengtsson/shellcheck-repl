@@ -9,7 +9,7 @@
 #'
 #' License: ISC
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
-#' Version: 0.1.3-9000
+#' Version: 0.1.3-9001
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
@@ -34,6 +34,12 @@ SC_REPL_DEBUG=${SC_REPL_DEBUG:-false}
 sc_repl_debug() {
     $SC_REPL_DEBUG || return 0
     echo >&2 "DEBUG: ${*}"
+}
+
+sc_repl_debug_keybindings() {
+    $SC_REPL_DEBUG || return 0
+    sc_repl_debug "All active keybindings per 'bind -X':"
+    { bind -X 1>&2; } > /dev/null
 }
 
 sc_repl_error() {
@@ -83,8 +89,9 @@ sc_repl_assert_keybind_exists() {
         sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
 	return 0
     fi
-    
+
     if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
+        sc_repl_debug_keybindings
 	sc_repl_error "No such keybinding: ${1}"
         sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... ERROR"
 	return 1
@@ -95,6 +102,7 @@ sc_repl_assert_keybind_exists() {
 
 sc_repl_asserts() {
     sc_repl_debug "sc_repl_asserts() ..."
+    
     sc_repl_assert_bash_version &&
     sc_repl_assert_shellcheck &&
     sc_repl_assert_readline_fcn_exists "accept-line"
@@ -179,13 +187,19 @@ sc_repl_verify_bind_accept() {
     ## Execute shell command: accept-line
     ## Triggered by key sequence: Ctrl-x Ctrl-b 2
     bind '"\C-x\C-b2": accept-line'
+    
+    ## FIXME: Why does this assertion fail the _first_ time
+    ## this function is called? /HB 2022-02-17
     sc_repl_assert_keybind_exists "\C-x\C-b2"
+    
     sc_repl_debug "sc_repl_verify_bind_accept() ... done"
 }
 
 sc_repl_enable() {
     sc_repl_debug "sc_repl_enable() ..."
-    sc_repl_verify_bind_accept
+
+    ## FIXME: Ignore assertion error here (see above comment)
+    sc_repl_verify_bind_accept #2> /dev/null
 
     ## Execute shell command: sc_repl_verify_or_unbind()
     ## Triggered by key sequence: Ctrl-x Ctrl-b 1
