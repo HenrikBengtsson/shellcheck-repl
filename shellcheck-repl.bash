@@ -119,6 +119,8 @@ sc_repl_verify_or_unbind() {
     local opts    
     local skip_pattern
     local style
+    local start_time
+    local end_time
     
     sc_repl_debug "sc_repl_verify_or_unbind() ..."
     
@@ -159,6 +161,8 @@ sc_repl_verify_or_unbind() {
     sc_repl_debug " - ShellCheck input: $(echo "${input}" | wc -l) lines"
     
     if [[ -z "${style}" ]]; then style="clean"; fi
+
+    start_time=$(date +%s%N)    
     case ${style} in
         raw-tty)
 	    shellcheck "${opts[@]}" --format=tty <(echo "${input}")
@@ -178,6 +182,8 @@ sc_repl_verify_or_unbind() {
             sc_repl_error "Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
 	    ;;
     esac
+    end_time=$(date +%s%N)
+    
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
 	>&2 echo
 	>&2 echo "To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g."
@@ -194,7 +200,9 @@ sc_repl_verify_or_unbind() {
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
         sc_repl_assert_keybind_exists "\C-x\C-b2"
     fi
-    
+
+    sc_repl_debug " - check time: $(((end_time - start_time) / 1000000)) ms"
+
     sc_repl_debug "sc_repl_verify_or_unbind() ... done"
 }
 
