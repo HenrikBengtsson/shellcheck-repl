@@ -9,9 +9,9 @@
 #'
 #' License: ISC
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
-#' Version: 0.1.4
+
 sc_repl_version() {
-    echo "0.1.4"
+    echo "0.1.4-9000"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
