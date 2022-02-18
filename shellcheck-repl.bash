@@ -167,9 +167,13 @@ sc_repl_verify_or_unbind() {
         ## Version 3: (much faster; almost as faster with disable=SC2154)
         ## Ask shellcheck to identify variables of interest
         mapfile -t vars < <(shellcheck --shell=bash --format=gcc --exclude="${SHELLCHECK_REPL_EXCLUDE}" <(echo "$READLINE_LINE") | grep -F "[SC2154]" | sed -E 's/.*: ([^ ]+) .*/\1/')
-        ## 'declare -p' dump only those
-        input=$(declare -p "${vars[@]}" 2> /dev/null)
-        input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\ntrue\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
+        if [[ ${#vars[@]} -gt 0 ]]; then
+            ## 'declare -p' dump only those
+            input=$(declare -p "${vars[@]}" 2> /dev/null)
+            input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\ntrue\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
+        else
+            input=$READLINE_LINE
+        fi
     else
         input=$READLINE_LINE
     fi
