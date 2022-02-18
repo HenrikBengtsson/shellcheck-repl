@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.1.4-9001"
+    echo "0.1.4-9002"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -154,7 +154,15 @@ sc_repl_verify_or_unbind() {
 
     if [[ ! "$SHELLCHECK_REPL_EXCLUDE" == *2154* ]]; then
         sc_repl_debug " - Special case: SC2154 are not disabled"
-        input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n"; declare -p; printf "}\n\n%s\n" "$READLINE_LINE")
+        ## Version 1:
+        # input=$(declare -p)
+        #input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
+        
+        ## Version 2:
+        ## Prune 'declare -p' output to speedup shellcheck (~20%)
+        input=$(declare -p | sed -E 's/^declare -([-irx]+) ([^=*]+)="(.*)"/declare -\1 \2=""/g' | sed -E 's/^declare -([aA]+) ([^=*]+)=[(](.*)[)]/declare -\1 \2=()/g')        
+        input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
+        echo "${input}" > /tmp/input.txt
     else
         input=$READLINE_LINE
     fi
