@@ -150,7 +150,8 @@ sc_repl_verify_or_unbind() {
     sc_repl_debug " - ShellCheck options: ${opts[*]}"
     sc_repl_debug " - READLINE_LINE: ${READLINE_LINE}"
 
-    if $SC_REPL_CHECK_2154; then
+    if [[ ! "$SHELLCHECK_REPL_EXCLUDE" == *2154* ]]; then
+        sc_repl_debug " - Special case: SC2154 are not disabled"
         input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n"; declare -p; printf "}\n\n%s\n" "$READLINE_LINE")
     else
         input=$READLINE_LINE
@@ -237,8 +238,10 @@ sc_repl_disable() {
     sc_repl_debug "sc_repl_disable() ... done"
 }
 
-sc_repl_setup() {
-    sc_repl_debug "sc_repl_setup() ..."
+sc_repl_init() {
+    local defaults
+    
+    sc_repl_debug "sc_repl_init() ..."
     sc_version
     if ! sc_repl_asserts; then
         sc_repl_error "ShellCheck REPL startup assertions failed"
@@ -253,22 +256,22 @@ sc_repl_setup() {
     ## SC2154: 'var' is referenced but not assigned.
     ## SC2155: Declare and assign separately to avoid masking return values.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-    SHELLCHECK_REPL_EXCLUDE_DEFAULTS=1001,1090,2034,2155,2164
+    defaults=1001,1090,2034,2155,2164
     if ! ${SC_REPL_CHECK_2154:-false}; then
-        SHELLCHECK_REPL_EXCLUDE_DEFAULTS=${SHELLCHECK_REPL_EXCLUDE_DEFAULTS},2154
+        defaults=${defaults},2154
     fi
-    sc_repl_debug "- SHELLCHECK_REPL_EXCLUDE_DEFAULTS: ${SHELLCHECK_REPL_EXCLUDE_DEFAULTS}"
-    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-${SHELLCHECK_REPL_EXCLUDE}}
+    sc_repl_debug "- defaults: ${defaults}"
+    SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-${defaults}}
     sc_repl_debug "- SHELLCHECK_REPL_EXCLUDE: ${SHELLCHECK_REPL_EXCLUDE}"
     sc_repl_enable
-    sc_repl_debug "sc_repl_setup() ... done"
+    sc_repl_debug "sc_repl_init() ... done"
 }
 
 sc_wiki_url() {
     echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
-if ${SC_REPL_SETUP:-true}; then
-    sc_repl_setup ""
+if ${SC_REPL_INIT:-true}; then
+    sc_repl_init ""
 fi
 
