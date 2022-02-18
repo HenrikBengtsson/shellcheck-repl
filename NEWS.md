@@ -1,5 +1,13 @@
 # shellcheck-repl
 
+## Version 0.1.4 (2022-02-17)
+
+### BUG FIX
+
+ * scl_enable() would output "ERROR: No such keybinding: \C-x\C-b2", which
+   was harmless.
+
+
 ## Version 0.1.3 (2022-02-17)
 
 ### NEW FEATURES
