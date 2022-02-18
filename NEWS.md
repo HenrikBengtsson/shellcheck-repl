@@ -8,6 +8,10 @@
   This is achieved by providing ShellCheck with a preamble of `declare -p`
   specifications for any variables of in the expression.
 
+* Now rule SC2178 (Variable was used as an array but is now assigned a
+  string.) works. This is achieved by providing ShellCheck with a preamble of
+  `declare -p` specifications for any variables assigned in the expression.
+
 
 ## Version 0.1.4 (2022-02-17)
 

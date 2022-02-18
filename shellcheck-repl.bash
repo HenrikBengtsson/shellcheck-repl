@@ -121,7 +121,8 @@ sc_repl_verify_or_unbind() {
     local style
     local start_time
     local end_time
-    local res
+    local vars
+    local tmp
     
     sc_repl_debug "sc_repl_verify_or_unbind() ..."
     
@@ -159,9 +160,16 @@ sc_repl_verify_or_unbind() {
     if [[ ! "$SHELLCHECK_REPL_EXCLUDE" == *2154* ]]; then
         sc_repl_debug " - Special case: Checking with rule SC2154"
         ## Ask shellcheck to identify variables of interest
-        mapfile -t vars < <(shellcheck --shell=bash --format=gcc --exclude="${SHELLCHECK_REPL_EXCLUDE}" <(echo "$READLINE_LINE") | grep -F "[SC2154]" | sed -E 's/.*: ([^ ]+) .*/\1/')
+        mapfile -t vars < <(shellcheck --shell=bash --format=gcc --exclude="${SHELLCHECK_REPL_EXCLUDE}" <(echo "$READLINE_LINE") | grep -F "[SC2154]" | sed -E 's/.*warning: ([^ ]+) .*/\1/')
     fi
 
+    if [[ ! "$SHELLCHECK_REPL_EXCLUDE" == *2178* ]]; then
+        sc_repl_debug " - Special case: Checking with rule SC2178"
+        ## Ask shellcheck to identify variables of interest
+        mapfile -t tmp < <(shellcheck --shell=bash --format=gcc <(echo "$READLINE_LINE") | grep -F "[SC2034]" | sed -E 's/.*warning: ([^ ]+) .*/\1/')
+        vars+=("${tmp[@]}")
+    fi
+    
     sc_repl_debug " - Variables: [n=${#vars[@]}] ${vars[*]}"
     
     ## Are there any variables involved?
