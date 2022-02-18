@@ -1,6 +1,6 @@
 # shellcheck-repl
 
-## Version 0.1.3-9001 (2022-02-17)
+## Version 0.1.3-9002 (2022-02-17)
 
 ### BUG FIX
 

@@ -9,9 +9,9 @@
 #'
 #' License: ISC
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
-#' Version: 0.1.3-9001
+#' Version: 0.1.3-9002
 sc_repl_version() {
-    echo "0.1.3-9001"
+    echo "0.1.3-9002"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -251,4 +251,4 @@ sc_wiki_url() {
     echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
-sc_repl_setup
+${SC_REPL_SETUP:-true} && sc_repl_setup
