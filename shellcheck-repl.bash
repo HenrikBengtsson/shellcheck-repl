@@ -154,7 +154,7 @@ sc_repl_verify_or_unbind() {
     sc_repl_debug " - READLINE_LINE: ${READLINE_LINE}"
 
     if [[ ! "$SHELLCHECK_REPL_EXCLUDE" == *2154* ]]; then
-        sc_repl_debug " - Special case: SC2154 are not disabled"
+        sc_repl_debug " - Special case: Checking with rule SC2154"
         ## Version 1:
         # input=$(declare -p)
         # input=$(printf "#dummy to disable does not apply to everything\ntrue\n#shellcheck disable=all\n{\n%s\n}\n\n%s\n" "${input}" "$READLINE_LINE")
