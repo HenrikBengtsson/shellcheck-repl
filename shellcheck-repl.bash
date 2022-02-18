@@ -46,7 +46,7 @@ sc_repl_debug_keybindings() {
 }
 
 sc_repl_error() {
-    echo >&2 "ERROR: ${*}"
+    echo >&2 "ERROR: ${*} [shellcheck-repl $(sc_repl_version)]"
     return 1
 }    
 
