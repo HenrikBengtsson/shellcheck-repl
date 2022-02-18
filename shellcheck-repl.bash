@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.1.4-9002"
+    echo "0.1.4-9003"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -280,13 +280,9 @@ sc_repl_init() {
     ## SC1090: Can't follow non-constant source. Use a directive to specify
     ##         location.
     ## SC2034: 'var' appears unused. Verify it or export it.
-    ## SC2154: 'var' is referenced but not assigned.
     ## SC2155: Declare and assign separately to avoid masking return values.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
     defaults=1001,1090,2034,2155,2164
-    if ! ${SC_REPL_CHECK_2154:-false}; then
-        defaults=${defaults},2154
-    fi
     sc_repl_debug "- defaults: ${defaults}"
     SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-${defaults}}
     sc_repl_debug "- SHELLCHECK_REPL_EXCLUDE: ${SHELLCHECK_REPL_EXCLUDE}"

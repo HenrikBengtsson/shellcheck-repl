@@ -1,13 +1,12 @@
 # shellcheck-repl
 
-## Version 0.1.4-9001 (2022-02-17)
+## Version 0.1.4-9003 (2022-02-17)
 
-BETA FEATURE:
+### NEW FEATURES
 
-* Add support for checking with SC2154 ('var' is referenced but not assigned).
-  It can be enabled by setting `SC_REPL_CHECK_2154=true`. Note that this adds
-  a significant overhead, because all output of `declare -p` is included in
-  check.
+* Now checking with rule SC2154 ('var' is referenced but not assigned).
+  This is achieved by providing ShellCheck with a preamble of `declare -p`
+  specifications for any variables of in the expression.
 
 
 ## Version 0.1.4 (2022-02-17)

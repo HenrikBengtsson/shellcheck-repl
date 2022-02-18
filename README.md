@@ -85,10 +85,9 @@ The suggestion is really valid for scripts, but for the command line is is just 
  * [SC1001]: This \= will be a regular '=' in this context.
  * [SC1090]: Can't follow non-constant source. Use a directive to specify location.
  * [SC2034]: 'var' appears unused. Verify it or export it.
- * [SC2154]: 'var' is referenced but not assigned.
  * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 
-This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,2034,2154,2164`.
+This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,2034,2164`.
 
 
 ## Requirements
@@ -121,5 +120,4 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 [SC1001]: https://github.com/koalaman/shellcheck/wiki/SC1001
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
-[SC2154]: https://github.com/koalaman/shellcheck/wiki/SC2154
 [SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
