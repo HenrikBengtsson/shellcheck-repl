@@ -10,6 +10,9 @@
 #' License: ISC
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 #' Version: 0.1.3-9001
+sc_repl_version() {
+    echo "0.1.3-9001"
+}
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
@@ -199,7 +202,7 @@ sc_repl_enable() {
     sc_repl_debug "sc_repl_enable() ..."
 
     ## FIXME: Ignore assertion error here (see above comment)
-    sc_repl_verify_bind_accept #2> /dev/null
+    sc_repl_verify_bind_accept 2> /dev/null
 
     ## Execute shell command: sc_repl_verify_or_unbind()
     ## Triggered by key sequence: Ctrl-x Ctrl-b 1
