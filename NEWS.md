@@ -1,5 +1,18 @@
 # shellcheck-repl
 
+## Version 0.2.0 (2022-02-18)
+
+### NEW FEATURES
+
+* Now checking with rule SC2154 ('var' is referenced but not assigned).
+  This is achieved by providing ShellCheck with a preamble of `declare -p`
+  specifications for any variables of in the expression.
+
+* Now rule SC2178 (Variable was used as an array but is now assigned a
+  string.) works. This is achieved by providing ShellCheck with a preamble of
+  `declare -p` specifications for any variables assigned in the expression.
+
+
 ## Version 0.1.4 (2022-02-17)
 
 ### BUG FIX
