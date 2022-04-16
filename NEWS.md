@@ -1,5 +1,14 @@
 # shellcheck-repl
 
+## Version 0.2.1 (2022-04-16)
+
+### BUG FIXES
+
+* Now ignoring SC1091, because `p=/path/to; source "$p/foo.sh"` would
+  produce "SC1091 (info): Not following: ./bin/activate: openBinaryFile:
+  does not exist (No such file or directory)".
+
+
 ## Version 0.2.0 (2022-02-18)
 
 ### NEW FEATURES
@@ -15,7 +24,7 @@
 
 ## Version 0.1.4 (2022-02-17)
 
-### BUG FIX
+### BUG FIXES
 
  * scl_enable() would output "ERROR: No such keybinding: \C-x\C-b2", which
    was harmless.
