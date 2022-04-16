@@ -1,6 +1,6 @@
 [![shellcheck](https://github.com/HenrikBengtsson/shellcheck-repl/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/HenrikBengtsson/shellcheck-repl/actions/workflows/shellcheck.yml)
 
-# Shellcheck REPL: Validation of Shell Commands Before Evaluation
+# ShellCheck REPL: Validation of Shell Commands Before Evaluation
 
 [ShellCheck] is a great tool for validating your Unix shell scripts.  It will parse the scripts and warn about mistakes, errors, and potential problems.  This tool - **shellcheck-repl** - brings ShellCheck validation to the [Bash] read-eval-print loop (REPL), i.e. the [Bash] prompt.  Getting this type of validation and feedback at the prompt lowers the risk of damaging mistakes and will help you become a better Bash user and developer.
  
@@ -80,14 +80,16 @@ cd /path/to
 ^-- SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 ```
 
-The suggestion is really valid for scripts, but for the command line is is just annoying.  Because of this, **shellcheck-repl** disables the check for SC2164 by default.  In addition, it also disables the validation of other ShellCheck rules that are too tedious or simply false-positives when used at the command line:
+The suggestion is really valid for scripts, but for the command line is is just annoying.  Because of this, **shellcheck-repl** disables the check for SC2164 by default.  In addition, it also disables the validation of other ShellCheck rules that are too tedious or simply false-positives when used at the command line. Here is the complete list:
 
  * [SC1001]: This \= will be a regular '=' in this context.
  * [SC1090]: Can't follow non-constant source. Use a directive to specify location.
+ * [SC1091]: Not following: (error message here).
  * [SC2034]: 'var' appears unused. Verify it or export it.
+ * [SC2155]: Declare and assign separately to avoid masking return values.
  * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 
-This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,2034,2164`.
+This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,1091,2034,2155,2164`.
 
 
 ## Requirements
@@ -119,5 +121,7 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 [SC2086]: https://github.com/koalaman/shellcheck/wiki/SC2086
 [SC1001]: https://github.com/koalaman/shellcheck/wiki/SC1001
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
+[SC1091]: https://github.com/koalaman/shellcheck/wiki/SC1091
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
+[SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
