@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.2.0-9001"
+    echo "0.2.1"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
