@@ -1,8 +1,12 @@
 # shellcheck-repl
 
-## Version 0.2.1-9000 (2022-04-16)
+## Version 0.2.1-9001 (2022-11-21)
 
-* ...
+### New Features
+
+ * Now ignoring [SC1113], because commenting an _absolute_ path
+   (e.g. `# /path/to/something` to be used later), would produce
+   `SC1091 (error): Use #!, not just #, for the shebang.`
 
 
 ## Version 0.2.1 (2022-04-16)
@@ -10,8 +14,8 @@
 ### Bug Fixes
 
 * Now ignoring [SC1091], because `p=/path/to; source "$p/foo.sh"`
-  would produce "SC1091 (info): Not following: ./bin/activate:
-  openBinaryFile: does not exist (No such file or directory)".
+  would produce `SC1091 (info): Not following: ./bin/activate:
+  openBinaryFile: does not exist (No such file or directory)`.
 
 
 ## Version 0.2.0 (2022-02-18)
@@ -33,7 +37,7 @@
 
 ### Bug Fixes
 
- * `scl_enable()` would output "ERROR: No such keybinding: \C-x\C-b2",
+ * `scl_enable()` would output `ERROR: No such keybinding: \C-x\C-b2`,
    which was harmless.
 
 
@@ -142,6 +146,7 @@
 
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
 [SC1091]: https://github.com/koalaman/shellcheck/wiki/SC1091
+[SC1113]: https://github.com/koalaman/shellcheck/wiki/SC1113
 [SC2154]: https://github.com/koalaman/shellcheck/wiki/SC2154
 [SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2178]: https://github.com/koalaman/shellcheck/wiki/SC2178
