@@ -85,11 +85,12 @@ The suggestion is really valid for scripts, but for the command line is is just 
  * [SC1001]: This \= will be a regular '=' in this context.
  * [SC1090]: Can't follow non-constant source. Use a directive to specify location.
  * [SC1091]: Not following: (error message here).
+ * [SC1113]: Use #!, not just #, for the shebang.
  * [SC2034]: 'var' appears unused. Verify it or export it.
  * [SC2155]: Declare and assign separately to avoid masking return values.
  * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 
-This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,1091,2034,2155,2164`.
+This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,1091,1113,2034,2155,2164`.
 
 
 ## Requirements
@@ -101,6 +102,14 @@ This set of rules that are disabled by default can be configured via environment
 ## Installation
 
 Download the `shellcheck-repl.bash` script and source it in your `~/.bashrc` startup script, e.g.
+
+```sh
+$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.3.0.tar.gz
+$ tar xf 0.3.0.tar.gz
+$ echo ". /path/to/software/shellcheck-repl-0.3.0/shellcheck-repl.bash" >> ~/.bashrc
+```
+
+Or, similarly, via Git:
 
 ```sh
 $ cd /path/to/software
@@ -122,6 +131,7 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 [SC1001]: https://github.com/koalaman/shellcheck/wiki/SC1001
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
 [SC1091]: https://github.com/koalaman/shellcheck/wiki/SC1091
+[SC1113]: https://github.com/koalaman/shellcheck/wiki/SC1113
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
 [SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
