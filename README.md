@@ -80,7 +80,7 @@ cd /path/to
 ^-- SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 ```
 
-The suggestion is really valid for scripts, but for the command line is is just annoying.  Because of this, **shellcheck-repl** disables the check for SC2164 by default.  In addition, it also disables the validation of other ShellCheck rules that are too tedious or simply false-positives when used at the command line. Here is the complete list:
+The suggestion is really valid for scripts, but for the command line it is just annoying.  Because of this, **shellcheck-repl** disables the check for SC2164 by default.  In addition, it also disables the validation of other ShellCheck rules that are too tedious or simply false-positives when used at the command line. Here is the complete list:
 
  * [SC1001]: This \= will be a regular '=' in this context.
  * [SC1090]: Can't follow non-constant source. Use a directive to specify location.
