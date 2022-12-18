@@ -93,6 +93,24 @@ The suggestion is really valid for scripts, but for the command line it is just 
 This set of rules that are disabled by default can be configured via environment variable `SHELLCHECK_REPL_EXCLUDE` by specifying rules (without `SC` prefix) as a comma-separated list.  The default corresponds to `SHELLCHECK_REPL_EXCLUDE=1001,1090,1091,1113,2034,2155,2164`.
 
 
+### Disable and enable hints
+
+When there's a ShellCheck issue, a hint on how to disable that issue is also outputted;
+
+```
+To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g.
+
+  export SHELLCHECK_REPL_EXCLUDE="${SHELLCHECK_REPL_EXCLUDE},4038"
+
+Currently, SHELLCHECK_REPL_EXCLUDE=1001,1090,1091,1113,2034,2155,2164
+
+To skip ShellCheck validation for this call, append two spaces
+```
+
+This message can be disabled by setting environment variable `SHELLCHECK_REPL_VERBOSE` to false
+
+
+
 ## Requirements
 
 * [ShellCheck]

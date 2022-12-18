@@ -1,5 +1,12 @@
 # shellcheck-repl
 
+### New Features
+
+ * The explaination how to exclude a specific type of ShellCheck check
+   that appears after an issue is detected can be disabled by setting
+   environment variable `SHELLCHECK_REPL_VERBOSE` to `false`.
+
+
 ## Version 0.3.0 (2022-11-21)
 
 ### New Features

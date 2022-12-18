@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.3.0-9001"
+    echo "0.3.0-9002"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -33,6 +33,7 @@ version_gt() {
 }
 
 SC_REPL_DEBUG=${SC_REPL_DEBUG:-false}
+SHELLCHECK_REPL_VERBOSE=${SHELLCHECK_REPL_VERBOSE:-true}
 
 sc_repl_debug() {
     $SC_REPL_DEBUG || return 0
@@ -205,15 +206,17 @@ sc_repl_verify_or_unbind() {
     esac
     
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
-        >&2 echo
-        >&2 echo "To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g."
-        >&2 echo
-        >&2 echo "  export SHELLCHECK_REPL_EXCLUDE=\"\${SHELLCHECK_REPL_EXCLUDE},4038\""
-        >&2 echo
-        >&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
-        >&2 echo
-        >&2 echo "To skip ShellCheck validation for this call, append two spaces"
-        >&2 echo
+        if ${SHELLCHECK_REPL_VERBOSE}; then
+            >&2 echo
+            >&2 echo "To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g."
+            >&2 echo
+            >&2 echo "  export SHELLCHECK_REPL_EXCLUDE=\"\${SHELLCHECK_REPL_EXCLUDE},4038\""
+            >&2 echo
+            >&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
+            >&2 echo
+            >&2 echo "To skip ShellCheck validation for this call, append two spaces"
+            >&2 echo
+        fi
 
         ## Execute shell command: sc_repl_verify_bind_accept
         ## Triggered by key sequence: Ctrl-x Ctrl-b 2
@@ -302,4 +305,3 @@ sc_wiki_url() {
 if ${SC_REPL_INIT:-true}; then
     sc_repl_init ""
 fi
-
