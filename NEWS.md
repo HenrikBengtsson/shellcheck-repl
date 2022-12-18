@@ -136,7 +136,7 @@
 
 ### New Features
 
- * Skipping more ShellCheck check by default.
+ * Skipping more ShellCheck checks by default.
 
 
 ## Version 0.0.2 (2019-03-28)
