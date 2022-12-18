@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.3.0-9002"
+    echo "0.3.0-9003"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -32,16 +32,16 @@ version_gt() {
     test "$(printf '%s\n' "$@" | sort --version-sort | head -n 1)" != "$1"
 }
 
-SC_REPL_DEBUG=${SC_REPL_DEBUG:-false}
+SHELLCHECK_REPL_DEBUG=${SHELLCHECK_REPL_DEBUG:-false}
 SHELLCHECK_REPL_VERBOSE=${SHELLCHECK_REPL_VERBOSE:-true}
 
 sc_repl_debug() {
-    $SC_REPL_DEBUG || return 0
+    $SHELLCHECK_REPL_DEBUG || return 0
     echo >&2 "DEBUG: ${*}"
 }
 
 sc_repl_debug_keybindings() {
-    $SC_REPL_DEBUG || return 0
+    $SHELLCHECK_REPL_DEBUG || return 0
     sc_repl_debug "All active keybindings per 'bind -X':"
     { bind -X 1>&2; } > /dev/null
 }
@@ -302,6 +302,6 @@ sc_wiki_url() {
     echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
-if ${SC_REPL_INIT:-true}; then
+if ${SHELLCHECK_REPL_INIT:-true}; then
     sc_repl_init ""
 fi
