@@ -1,5 +1,7 @@
 # shellcheck-repl
 
+## Version 0.4.0 (2022-12-17)
+
 ### Significant Changes
 
  * Environment variables `SC_REPL_INIT` and `SC_REPL_DEBUG` have been
