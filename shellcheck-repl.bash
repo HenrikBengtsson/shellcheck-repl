@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.3.0"
+    echo "0.3.0-9001"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -64,16 +64,16 @@ sc_repl_assert_bash_version() {
                        
 sc_repl_assert_shellcheck() {
     if ! command -v shellcheck &> /dev/null; then
-	sc_repl_error "'shellcheck' not found"
-	return 1
+        sc_repl_error "'shellcheck' not found"
+        return 1
     fi
     return 0
 }
 
 sc_repl_assert_readline_fcn_exists() {
     if ! bind -l | grep -q -E "^${1:?}$"; then
-	sc_repl_error "No such bash function: ${1}"
-	return 1
+        sc_repl_error "No such bash function: ${1}"
+        return 1
     fi
     return 0
 }
@@ -90,14 +90,14 @@ sc_repl_assert_keybind_exists() {
     ## Skip tests if 'bind -X' is not supported
     if ! sc_repl_bind_has_option_X; then
         sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
-	return 0
+        return 0
     fi
 
     if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
         sc_repl_debug_keybindings
-	sc_repl_error "No such keybinding: ${1}"
+        sc_repl_error "No such keybinding: ${1}"
         sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... ERROR"
-	return 1
+        return 1
     fi
     sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... OK"
     return 0
@@ -186,34 +186,34 @@ sc_repl_verify_or_unbind() {
     start_time=$(date +%s%N)    
     case ${style} in
         raw-tty)
-	    shellcheck "${opts[@]}" --format=tty <(echo "${input}")
-	    ;;
+            shellcheck "${opts[@]}" --format=tty <(echo "${input}")
+            ;;
         raw-gcc)
-	    shellcheck "${opts[@]}" --format=gcc <(echo "${input}")
-	    ;;
+            shellcheck "${opts[@]}" --format=gcc <(echo "${input}")
+            ;;
         full)
-	    shellcheck "${opts[@]}" <(echo "${input}") | tail -n +2
-	    ;;
+            shellcheck "${opts[@]}" <(echo "${input}") | tail -n +2
+            ;;
         clean)
-	    shellcheck "${opts[@]}" <(echo "${input}") | sed -n '1,2b; /^$/q; p'
-	    ;;
+            shellcheck "${opts[@]}" <(echo "${input}") | sed -n '1,2b; /^$/q; p'
+            ;;
         note)
-	    shellcheck "${opts[@]}" --format=gcc <(echo "${input}") | cut -d : -f 4- ;;
-	*)
+            shellcheck "${opts[@]}" --format=gcc <(echo "${input}") | cut -d : -f 4- ;;
+        *)
             sc_repl_error "Unknown value for shellcheck-repl variable 'SHELLCHECK_REPL_INFO' (valid values are 'raw', 'full', 'short' and 'clean' [default]): '${SHELLCHECK_REPL_INFO}'"
-	    ;;
+            ;;
     esac
     
     if [[ "${PIPESTATUS[0]}" != 0 ]]; then
-	>&2 echo
-	>&2 echo "To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g."
-	>&2 echo
-	>&2 echo "  export SHELLCHECK_REPL_EXCLUDE=\"\${SHELLCHECK_REPL_EXCLUDE},4038\""
-	>&2 echo
-	>&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
-	>&2 echo
-	>&2 echo "To skip ShellCheck validation for this call, append two spaces"
-	>&2 echo
+        >&2 echo
+        >&2 echo "To skip a check, add its SC number to 'SHELLCHECK_REPL_EXCLUDE', e.g."
+        >&2 echo
+        >&2 echo "  export SHELLCHECK_REPL_EXCLUDE=\"\${SHELLCHECK_REPL_EXCLUDE},4038\""
+        >&2 echo
+        >&2 echo "Currently, SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE}"
+        >&2 echo
+        >&2 echo "To skip ShellCheck validation for this call, append two spaces"
+        >&2 echo
 
         ## Execute shell command: sc_repl_verify_bind_accept
         ## Triggered by key sequence: Ctrl-x Ctrl-b 2
