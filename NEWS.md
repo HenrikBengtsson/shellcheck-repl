@@ -1,5 +1,19 @@
 # shellcheck-repl
 
+## Version 0.4.0 (2022-12-17)
+
+### Significant Changes
+
+ * Environment variables `SC_REPL_INIT` and `SC_REPL_DEBUG` have been
+   renamed to `SHELLCHECK_REPL_INIT` and `SHELLCHECK_REPL_DEBUG`.
+
+### New Features
+
+ * The explaination how to exclude a specific type of ShellCheck check
+   that appears after an issue is detected can be disabled by setting
+   environment variable `SHELLCHECK_REPL_VERBOSE` to `false`.
+
+
 ## Version 0.3.0 (2022-11-21)
 
 ### New Features
@@ -124,7 +138,7 @@
 
 ### New Features
 
- * Skipping more ShellCheck check by default.
+ * Skipping more ShellCheck checks by default.
 
 
 ## Version 0.0.2 (2019-03-28)
