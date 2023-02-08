@@ -4,9 +4,18 @@
 
 ### New Features
 
+ * Add environment variable `SHELLCHECK_REPL_ACTION`. If `enable`,
+   then ShellCheck REPL is enabled and if `disable`, it is enabled. if
+   `sessioninfo`, then session information is displayed.
+
  * Now validation is skipped immediately if input is empty, which
    happens if we just press ENTER.
-   
+
+### Defunct
+
+ * Environment variable `SHELLCHECK_REPL_INIT` is defunct. Use
+   `SHELLCHECK_REPL_ACTION` instead.
+
 
 ## Version 0.4.0 (2022-12-17)
 
