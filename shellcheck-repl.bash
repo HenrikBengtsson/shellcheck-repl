@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.0"
+    echo "0.4.0-9004"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -40,14 +40,37 @@ sc_repl_debug() {
     echo >&2 "DEBUG: ${*}"
 }
 
-sc_repl_debug_keybindings() {
+sc_repl_debug_shell_command_keybindings() {
     $SHELLCHECK_REPL_DEBUG || return 0
-    sc_repl_debug "All active keybindings per 'bind -X':"
+    sc_repl_debug "All active shell-command keybindings per 'bind -X':"
     { bind -X 1>&2; } > /dev/null
 }
 
+sc_repl_debug_function_keybindings() {
+    $SHELLCHECK_REPL_DEBUG || return 0
+    sc_repl_debug "All active shell-command keybindings per 'bind -P':"
+    { bind -P | grep -F "can be found on" 1>&2; } > /dev/null
+}
+
+sc_repl_debug_sequence_keybindings() {
+    $SHELLCHECK_REPL_DEBUG || return 0
+    sc_repl_debug "All active sequence keybindings per 'bind -s':"
+    { bind -s | grep -F "can be found on" 1>&2; } > /dev/null
+}
+
+sc_repl_sessioninfo() {
+    sc_version
+    echo "ShellCheck REPL: $(sc_repl_version)"
+    echo "ShellCheck: ${SHELLCHECK_VERSION}"
+    echo "Bash: ${BASH_VERSION}"
+#    echo "Bash key sequences bound to shell commands:"
+#    bind -X
+#    echo "Bash key sequences bound to functions:"
+#    bind -P | grep "can be found"
+}    
+
 sc_repl_error() {
-    echo >&2 "ERROR: ${*} [shellcheck-repl $(sc_repl_version)]"
+    echo >&2 "ERROR: ${*} [shellcheck-repl $(sc_repl_version); bash ${BASH_VERSION}]"
     return 1
 }    
 
@@ -86,21 +109,67 @@ sc_repl_bind_has_option_X() {
     bind -X &> /dev/null
 }
 
-sc_repl_assert_keybind_exists() {
-    sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ..."
+sc_repl_assert_shell_command_keybinding_exists() {
+    sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ..."
     ## Skip tests if 'bind -X' is not supported
     if ! sc_repl_bind_has_option_X; then
-        sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
+        sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ... done"
         return 0
     fi
 
     if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
-        sc_repl_debug_keybindings
-        sc_repl_error "No such keybinding: ${1}"
-        sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... ERROR"
+        sc_repl_debug_shell_command_keybindings
+        sc_repl_error "No such shell-command keybinding: ${1}"
+        sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ... ERROR"
         return 1
     fi
-    sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... OK"
+    sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ... OK"
+    return 0
+}
+
+## Function to check whether 'bind -P' is available
+sc_repl_bind_has_option_P() {
+    bind -P &> /dev/null
+}
+
+sc_repl_assert_function_keybinding_exists() {
+    sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ..."
+    ## Skip tests if 'bind -P' is not supported
+    if ! sc_repl_bind_has_option_P; then
+        sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... done"
+        return 0
+    fi
+
+    if ! bind -P | grep -q -F '"'"${1:?}"'"'; then
+        sc_repl_debug_function_keybindings
+        sc_repl_error "No such function keybinding: ${1}"
+        sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... ERROR"
+        return 1
+    fi
+    sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... OK"
+    return 0
+}
+
+## Function to check whether 'bind -s' is available
+sc_repl_bind_has_option_s() {
+    bind -s &> /dev/null
+}
+
+sc_repl_assert_sequence_keybinding_exists() {
+    sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ..."
+    ## Skip tests if 'bind -P' is not supported
+    if ! sc_repl_bind_has_option_s; then
+        sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ... done"
+        return 0
+    fi
+
+    if ! bind -s | grep -q -F '"'"${1:?}"'":'; then
+        sc_repl_debug_sequence_keybindings
+        sc_repl_error "No such sequence keybinding: ${1}"
+        sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ... ERROR"
+        return 1
+    fi
+    sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ... OK"
     return 0
 }
 
@@ -124,8 +193,15 @@ sc_repl_verify_or_unbind() {
     local end_time
     local vars
     local tmp
-    
+
     sc_repl_debug "sc_repl_verify_or_unbind() ..."
+    
+    ## Nothing to do?
+    if [[ -z "$READLINE_LINE" ]]; then
+        sc_repl_debug " - empty input"
+        sc_repl_debug "sc_repl_verify_or_unbind() ... done"
+	return
+    fi
     
     ## Skip ShellCheck? Default is to skip with leading:
     ## * ^!           (history expansion)
@@ -150,7 +226,8 @@ sc_repl_verify_or_unbind() {
         opts+=("--severity=${SHELLCHECK_REPL_VERIFY_LEVEL:=info}")
     fi
     # Filter the output of shellcheck by removing filename
-    style=${SHELLCHECK_REPL_INFO,,}
+    style=${SHELLCHECK_REPL_INFO:-""}
+    style=${style,,}
     if [[ -z "${style}" ]]; then style="clean"; fi
     sc_repl_debug " - style: ${style}"
     sc_repl_debug " - ShellCheck options: ${opts[*]}"
@@ -218,10 +295,11 @@ sc_repl_verify_or_unbind() {
             >&2 echo
         fi
 
-        ## Execute shell command: sc_repl_verify_bind_accept
-        ## Triggered by key sequence: Ctrl-x Ctrl-b 2
+        ## Key sequence: {Ctrl-x Ctrl-b 2}
+        ## Executes shell command: sc_repl_verify_bind_accept
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
-        sc_repl_assert_keybind_exists "\C-x\C-b2"
+        sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b2"
+        sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
     fi
 
     end_time=$(date +%s%N)
@@ -233,41 +311,37 @@ sc_repl_verify_or_unbind() {
 
 sc_repl_verify_bind_accept() {
     sc_repl_debug "sc_repl_verify_bind_accept() ..."
-    ## Execute shell command: accept-line
-    ## Triggered by key sequence: Ctrl-x Ctrl-b 2
+    ## Key sequence: {Ctrl-x Ctrl-b 2}
+    ## Executes function: accept-line
     bind '"\C-x\C-b2": accept-line'
-    
-    ## FIXME: Why does this assertion fail the _first_ time
-    ## this function is called? /HB 2022-02-17
-    sc_repl_assert_keybind_exists "\C-x\C-b2"
-    
+    sc_repl_assert_function_keybinding_exists "\C-x\C-b2"
     sc_repl_debug "sc_repl_verify_bind_accept() ... done"
 }
 
 sc_repl_enable() {
     sc_repl_debug "sc_repl_enable() ..."
 
-    ## FIXME: Ignore assertion error here (see above comment)
-    sc_repl_verify_bind_accept 2> /dev/null
+    sc_repl_verify_bind_accept
 
-    ## Execute shell command: sc_repl_verify_or_unbind()
-    ## Triggered by key sequence: Ctrl-x Ctrl-b 1
+    ## Key sequence: {Ctrl-x Ctrl-b 1}
+    ## Executes shell command: sc_repl_verify_or_unbind()
     bind -x '"\C-x\C-b1": sc_repl_verify_or_unbind'
-    sc_repl_assert_keybind_exists "\C-x\C-b1"
+    sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
     
-    ## Execute keystrokes: Ctrl-x Ctrl-b 1 Ctrl-x Ctrl-b 2
-    ## Triggered by key sequence: Ctrl-m (Carriage Return)
+    ## Key sequence: Ctrl-m (Carriage Return)
+    ## Executes keystrokes: {Ctrl-x Ctrl-b 1} {Ctrl-x Ctrl-b 2}
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
-#    sc_repl_assert_keybind_exists "\C-m"
+    sc_repl_assert_sequence_keybinding_exists "\C-m"
+    sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
     sc_repl_debug "sc_repl_enable() ... done"
 }
 
 sc_repl_disable() {
     sc_repl_debug "sc_repl_disable() ..."
-    ## Execute shell command: accept-line
-    ## Triggered by key sequence: Ctrl-m (Carriage Return)
+    ## Key sequence: Ctrl-m (Carriage Return)
+    ## Executes function: accept-line
     bind '"\C-m": accept-line'
-    sc_repl_assert_keybind_exists "\C-m"
+    sc_repl_assert_function_keybinding_exists "\C-m"
     sc_repl_debug "sc_repl_disable() ... done"
 }
 
@@ -302,6 +376,19 @@ sc_wiki_url() {
     echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
-if ${SHELLCHECK_REPL_INIT:-true}; then
-    sc_repl_init ""
+
+## Deprecation warning
+if [[ -n ${SHELLCHECK_REPL_INIT} ]]; then
+    sc_repl_error "SHELLCHECK_REPL_INIT is defunct. Use SHELLCHECK_REPL_ACTION=init or SHELLCHECK_REPL_ACTION=none instead"
 fi
+
+case ${SHELLCHECK_REPL_ACTION:-"enable"} in
+    disable)
+	sc_repl_disable "";;
+    enable)
+	sc_repl_init "";;
+    sessioninfo)
+	sc_repl_sessioninfo;;
+    *)
+	sc_repl_error "Unknown value on SHELLCHECK_REPL_ACTION: '${SHELLCHECK_REPL_ACTION}'"
+esac
