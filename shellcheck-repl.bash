@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.0-9003"
+    echo "0.4.0-9004"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -50,6 +50,12 @@ sc_repl_debug_function_keybindings() {
     $SHELLCHECK_REPL_DEBUG || return 0
     sc_repl_debug "All active shell-command keybindings per 'bind -P':"
     { bind -P | grep -F "can be found on" 1>&2; } > /dev/null
+}
+
+sc_repl_debug_sequence_keybindings() {
+    $SHELLCHECK_REPL_DEBUG || return 0
+    sc_repl_debug "All active sequence keybindings per 'bind -s':"
+    { bind -s | grep -F "can be found on" 1>&2; } > /dev/null
 }
 
 sc_repl_sessioninfo() {
@@ -144,6 +150,29 @@ sc_repl_assert_function_keybinding_exists() {
     return 0
 }
 
+## Function to check whether 'bind -s' is available
+sc_repl_bind_has_option_s() {
+    bind -s &> /dev/null
+}
+
+sc_repl_assert_sequence_keybinding_exists() {
+    sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ..."
+    ## Skip tests if 'bind -P' is not supported
+    if ! sc_repl_bind_has_option_s; then
+        sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ... done"
+        return 0
+    fi
+
+    if ! bind -s | grep -q -F '"'"${1:?}"'":'; then
+        sc_repl_debug_sequence_keybindings
+        sc_repl_error "No such sequence keybinding: ${1}"
+        sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ... ERROR"
+        return 1
+    fi
+    sc_repl_debug "sc_repl_assert_sequence_keybinding_exists('${1}') ... OK"
+    return 0
+}
+
 sc_repl_asserts() {
     sc_repl_debug "sc_repl_asserts() ..."
     
@@ -197,7 +226,8 @@ sc_repl_verify_or_unbind() {
         opts+=("--severity=${SHELLCHECK_REPL_VERIFY_LEVEL:=info}")
     fi
     # Filter the output of shellcheck by removing filename
-    style=${SHELLCHECK_REPL_INFO:-,,}
+    style=${SHELLCHECK_REPL_INFO:-""}
+    style=${style,,}
     if [[ -z "${style}" ]]; then style="clean"; fi
     sc_repl_debug " - style: ${style}"
     sc_repl_debug " - ShellCheck options: ${opts[*]}"
@@ -302,7 +332,7 @@ sc_repl_enable() {
     ## Key sequence: Ctrl-m (Carriage Return)
     ## Executes keystrokes: {Ctrl-x Ctrl-b 1} {Ctrl-x Ctrl-b 2}
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
-    sc_repl_assert_shell_command_keybinding_exists "\C-m"
+    sc_repl_assert_sequence_keybinding_exists "\C-m"
     sc_repl_debug "sc_repl_enable() ... done"
 }
 
