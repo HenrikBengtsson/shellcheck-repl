@@ -64,7 +64,7 @@ sc_repl_sessioninfo() {
 }    
 
 sc_repl_error() {
-    echo >&2 "ERROR: ${*} [shellcheck-repl $(sc_repl_version)]"
+    echo >&2 "ERROR: ${*} [shellcheck-repl $(sc_repl_version); bash ${BASH_VERSION}]"
     return 1
 }    
 

@@ -11,6 +11,8 @@
  * Now validation is skipped immediately if input is empty, which
    happens if we just press ENTER.
 
+ * Error messages now also include the Bash version.
+
 ### Defunct
 
  * Environment variable `SHELLCHECK_REPL_INIT` is defunct. Use
