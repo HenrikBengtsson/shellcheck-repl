@@ -299,6 +299,7 @@ sc_repl_verify_or_unbind() {
         ## Executes shell command: sc_repl_verify_bind_accept
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
         sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b2"
+        sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
     fi
 
     end_time=$(date +%s%N)
@@ -314,15 +315,13 @@ sc_repl_verify_bind_accept() {
     ## Executes function: accept-line
     bind '"\C-x\C-b2": accept-line'
     sc_repl_assert_function_keybinding_exists "\C-x\C-b2"
-    
     sc_repl_debug "sc_repl_verify_bind_accept() ... done"
 }
 
 sc_repl_enable() {
     sc_repl_debug "sc_repl_enable() ..."
 
-    ## FIXME: Ignore assertion error here (see above comment)
-    sc_repl_verify_bind_accept 2> /dev/null
+    sc_repl_verify_bind_accept
 
     ## Key sequence: {Ctrl-x Ctrl-b 1}
     ## Executes shell command: sc_repl_verify_or_unbind()
@@ -333,6 +332,7 @@ sc_repl_enable() {
     ## Executes keystrokes: {Ctrl-x Ctrl-b 1} {Ctrl-x Ctrl-b 2}
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
     sc_repl_assert_sequence_keybinding_exists "\C-m"
+    sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
     sc_repl_debug "sc_repl_enable() ... done"
 }
 
