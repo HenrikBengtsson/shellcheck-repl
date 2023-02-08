@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.0"
+    echo "0.4.0-9001"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -90,7 +90,7 @@ sc_repl_assert_keybind_exists() {
     sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ..."
     ## Skip tests if 'bind -X' is not supported
     if ! sc_repl_bind_has_option_X; then
-        sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... SKIP"
+        sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ... done"
         return 0
     fi
 
@@ -124,8 +124,15 @@ sc_repl_verify_or_unbind() {
     local end_time
     local vars
     local tmp
-    
+
     sc_repl_debug "sc_repl_verify_or_unbind() ..."
+    
+    ## Nothing to do?
+    if [[ -z "$READLINE_LINE" ]]; then
+        sc_repl_debug " - empty input"
+        sc_repl_debug "sc_repl_verify_or_unbind() ... done"
+	return
+    fi
     
     ## Skip ShellCheck? Default is to skip with leading:
     ## * ^!           (history expansion)

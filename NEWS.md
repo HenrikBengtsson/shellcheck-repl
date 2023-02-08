@@ -1,5 +1,13 @@
 # shellcheck-repl
 
+## Version (development version)
+
+### New Features
+
+ * Now validation is skipped immediately if input is empty, which
+   happens if we just press ENTER.
+   
+
 ## Version 0.4.0 (2022-12-17)
 
 ### Significant Changes
