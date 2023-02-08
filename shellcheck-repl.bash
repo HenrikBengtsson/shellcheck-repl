@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.0-9002"
+    echo "0.4.0-9003"
 }
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
@@ -46,12 +46,21 @@ sc_repl_debug_shell_command_keybindings() {
     { bind -X 1>&2; } > /dev/null
 }
 
+sc_repl_debug_function_keybindings() {
+    $SHELLCHECK_REPL_DEBUG || return 0
+    sc_repl_debug "All active shell-command keybindings per 'bind -P':"
+    { bind -P 1>&2; } > /dev/null
+}
+
 sc_repl_sessioninfo() {
+    sc_version
     echo "ShellCheck REPL: $(sc_repl_version)"
     echo "ShellCheck: ${SHELLCHECK_VERSION}"
     echo "Bash: ${BASH_VERSION}"
-    echo "Bash key sequences bound to shell commands:"
-    { bind -X 1>&2; } > /dev/null
+#    echo "Bash key sequences bound to shell commands:"
+#    bind -X
+#    echo "Bash key sequences bound to functions:"
+#    bind -P | grep "can be found"
 }    
 
 sc_repl_error() {
@@ -95,7 +104,7 @@ sc_repl_bind_has_option_X() {
 }
 
 sc_repl_assert_shell_command_keybinding_exists() {
-    sc_repl_debug "sc_repl_assert_keybind_exists('${1}') ..."
+    sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ..."
     ## Skip tests if 'bind -X' is not supported
     if ! sc_repl_bind_has_option_X; then
         sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ... done"
@@ -104,11 +113,33 @@ sc_repl_assert_shell_command_keybinding_exists() {
 
     if ! bind -X | grep -q -F '"'"${1:?}"'":'; then
         sc_repl_debug_shell_command_keybindings
-        sc_repl_error "No such keybinding: ${1}"
+        sc_repl_error "No such shell-command keybinding: ${1}"
         sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ... ERROR"
         return 1
     fi
     sc_repl_debug "sc_repl_assert_shell_command_keybinding_exists('${1}') ... OK"
+    return 0
+}
+
+sc_repl_bind_has_option_P() {
+    bind -P &> /dev/null
+}
+
+sc_repl_assert_function_keybinding_exists() {
+    sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ..."
+    ## Skip tests if 'bind -P' is not supported
+    if ! sc_repl_bind_has_option_P; then
+        sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... done"
+        return 0
+    fi
+
+    if ! bind -P | grep -q -F '"'"${1:?}"'":'; then
+        sc_repl_debug_shell_command_keybindings
+        sc_repl_error "No such function keybinding: ${1}"
+        sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... ERROR"
+        return 1
+    fi
+    sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... OK"
     return 0
 }
 
@@ -250,16 +281,8 @@ sc_repl_verify_bind_accept() {
     sc_repl_debug "sc_repl_verify_bind_accept() ..."
     ## Key sequence: {Ctrl-x Ctrl-b 2}
     ## Executes function: accept-line
-    echo "bindings:"
-    bind -X
-    echo "set:"
     bind '"\C-x\C-b2": accept-line'
-    echo "bindings:"
-    bind -X
-    
-    ## FIXME: Why does this assertion fail the _first_ time
-    ## this function is called? /HB 2022-02-17
-    sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b2"
+    sc_repl_assert_function_keybinding_exists "\C-x\C-b2"
     
     sc_repl_debug "sc_repl_verify_bind_accept() ... done"
 }
@@ -272,25 +295,13 @@ sc_repl_enable() {
 
     ## Key sequence: {Ctrl-x Ctrl-b 1}
     ## Executes shell command: sc_repl_verify_or_unbind()
-    echo "bindings:"
-    bind -X
-    echo "set:"
     bind -x '"\C-x\C-b1": sc_repl_verify_or_unbind'
-    echo "bindings:"
-    bind -X
-    echo "set:"
     sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
     
     ## Key sequence: Ctrl-m (Carriage Return)
     ## Executes keystrokes: {Ctrl-x Ctrl-b 1} {Ctrl-x Ctrl-b 2}
-    echo "bindings:"
-    bind -X
-    echo "set:"
     bind '"\C-m": "\C-x\C-b1\C-x\C-b2"'
-    echo "bindings:"
-    bind -X
-    echo "set:"
-#    sc_repl_assert_shell_command_keybinding_exists "\C-m"
+    sc_repl_assert_shell_command_keybinding_exists "\C-m"
     sc_repl_debug "sc_repl_enable() ... done"
 }
 
@@ -298,13 +309,8 @@ sc_repl_disable() {
     sc_repl_debug "sc_repl_disable() ..."
     ## Key sequence: Ctrl-m (Carriage Return)
     ## Executes function: accept-line
-    echo "bindings:"
-    bind -X
-    echo "set:"
     bind '"\C-m": accept-line'
-    echo "bindings:"
-    bind -X
-    sc_repl_assert_shell_command_keybinding_exists "\C-m"
+    sc_repl_assert_function_keybinding_exists "\C-m"
     sc_repl_debug "sc_repl_disable() ... done"
 }
 
