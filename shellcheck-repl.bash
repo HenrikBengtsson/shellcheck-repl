@@ -49,7 +49,7 @@ sc_repl_debug_shell_command_keybindings() {
 sc_repl_debug_function_keybindings() {
     $SHELLCHECK_REPL_DEBUG || return 0
     sc_repl_debug "All active shell-command keybindings per 'bind -P':"
-    { bind -P 1>&2; } > /dev/null
+    { bind -P | grep -F "can be found on" 1>&2; } > /dev/null
 }
 
 sc_repl_sessioninfo() {
@@ -121,6 +121,7 @@ sc_repl_assert_shell_command_keybinding_exists() {
     return 0
 }
 
+## Function to check whether 'bind -P' is available
 sc_repl_bind_has_option_P() {
     bind -P &> /dev/null
 }
@@ -133,8 +134,8 @@ sc_repl_assert_function_keybinding_exists() {
         return 0
     fi
 
-    if ! bind -P | grep -q -F '"'"${1:?}"'":'; then
-        sc_repl_debug_shell_command_keybindings
+    if ! bind -P | grep -q -F '"'"${1:?}"'"'; then
+        sc_repl_debug_function_keybindings
         sc_repl_error "No such function keybinding: ${1}"
         sc_repl_debug "sc_repl_assert_function_keybinding_exists('${1}') ... ERROR"
         return 1
