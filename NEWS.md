@@ -13,6 +13,12 @@
 
  * Error messages now also include the Bash version.
 
+### Known issues
+
+ * Due to a bug Bash (>= 5.1 & < 5.2), ShellCheck REPL will not work
+   correctly. ShellCheck REPL will produce an informative warning, if
+   enabled on a buggy Bash version.
+
 ### Defunct
 
  * Environment variable `SHELLCHECK_REPL_INIT` is defunct. Use

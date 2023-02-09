@@ -11,8 +11,9 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.0-9004"
+    echo "0.4.0-9005"
 }
+
 
 ## Source: https://github.com/koalaman/shellcheck/issues/1535
 sc_version() {
@@ -67,6 +68,11 @@ sc_repl_sessioninfo() {
 #    bind -X
 #    echo "Bash key sequences bound to functions:"
 #    bind -P | grep "can be found"
+}    
+
+sc_repl_warning() {
+    echo >&2 "WARNING: ${*} [shellcheck-repl $(sc_repl_version); bash ${BASH_VERSION}]"
+    return 0
 }    
 
 sc_repl_error() {
@@ -354,6 +360,11 @@ sc_repl_init() {
         sc_repl_error "ShellCheck REPL startup assertions failed"
         return 1
     fi
+
+    if [[ ${BASH_VERSINFO[0]} -eq 5 ]] && [[ ${BASH_VERSINFO[1]} -eq 1 ]]; then
+        sc_repl_warning "ShellCheck REPL does not work properly, because of a bug in Bash (>= 5.1 & < 5.2). The plan is to find a workaround for this bug. See for https://github.com/HenrikBengtsson/shellcheck-repl/issues/21 details and progress"
+    fi
+
     
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
