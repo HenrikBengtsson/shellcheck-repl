@@ -209,3 +209,4 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
 [SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
+[#21]: https://github.com/HenrikBengtsson/shellcheck-repl/issues/21
