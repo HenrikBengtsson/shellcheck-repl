@@ -1,5 +1,30 @@
 # shellcheck-repl
 
+## Version 0.4.1 (2023-02-14)
+
+### New Features
+
+ * Add environment variable `SHELLCHECK_REPL_ACTION`. If `enable`,
+   then ShellCheck REPL is enabled and if `disable`, it is enabled. if
+   `sessioninfo`, then session information is displayed.
+
+ * Now validation is skipped immediately if input is empty, which
+   happens if we just press ENTER.
+
+ * Error messages now also include the Bash version.
+
+### Known issues
+
+ * Due to a bug Bash (>= 5.1 & < 5.2), ShellCheck REPL will not work
+   correctly. ShellCheck REPL will produce an informative warning, if
+   enabled on a buggy Bash version.
+
+### Defunct
+
+ * Environment variable `SHELLCHECK_REPL_INIT` is defunct. Use
+   `SHELLCHECK_REPL_ACTION` instead.
+
+
 ## Version 0.4.0 (2022-12-17)
 
 ### Significant Changes
