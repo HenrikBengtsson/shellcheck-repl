@@ -167,7 +167,9 @@ SHELLCHECK_REPL_VERBOSE=false
 ## Requirements
 
 * [ShellCheck]
-* [Bash] (>= 4.4) (the only supported shell right now)
+* [Bash] (>= 4.4), _except_ Bash (>= 5.1.0 & < 5.2.0) [#21]
+
+Bash is the only supported shell right now.
 
 
 ## Installation
@@ -207,3 +209,4 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
 [SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
+[#21]: https://github.com/HenrikBengtsson/shellcheck-repl/issues/21
