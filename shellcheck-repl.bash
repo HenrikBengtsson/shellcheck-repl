@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.1-9000"
+    echo "0.4.1-9001"
 }
 
 
@@ -206,7 +206,7 @@ sc_repl_verify_or_unbind() {
     if [[ -z "$READLINE_LINE" ]]; then
         sc_repl_debug " - empty input"
         sc_repl_debug "sc_repl_verify_or_unbind() ... done"
-	return
+        return
     fi
     
     ## Skip ShellCheck? Default is to skip with leading:
@@ -301,6 +301,12 @@ sc_repl_verify_or_unbind() {
             >&2 echo
         fi
 
+        sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
+
+        ## Avoid Bash 5.1.* bug
+        bind -r "\C-x\C-b2"
+        sc_repl_assert_shell_command_keybinding_exists "\C-x\C-b1"
+
         ## Key sequence: {Ctrl-x Ctrl-b 2}
         ## Executes shell command: sc_repl_verify_bind_accept
         bind -x '"\C-x\C-b2": sc_repl_verify_bind_accept'
@@ -317,6 +323,9 @@ sc_repl_verify_or_unbind() {
 
 sc_repl_verify_bind_accept() {
     sc_repl_debug "sc_repl_verify_bind_accept() ..."
+    ## Avoid Bash 5.1.* bug
+    bind -r "\C-x\C-b2"
+    
     ## Key sequence: {Ctrl-x Ctrl-b 2}
     ## Executes function: accept-line
     bind '"\C-x\C-b2": accept-line'
@@ -328,6 +337,10 @@ sc_repl_enable() {
     sc_repl_debug "sc_repl_enable() ..."
 
     sc_repl_verify_bind_accept
+
+    ## Avoid Bash 5.1.* bug
+    bind -r "\C-x\C-b1"
+    bind -r "\C-m"
 
     ## Key sequence: {Ctrl-x Ctrl-b 1}
     ## Executes shell command: sc_repl_verify_or_unbind()
@@ -344,6 +357,8 @@ sc_repl_enable() {
 
 sc_repl_disable() {
     sc_repl_debug "sc_repl_disable() ..."
+    bind -r "\C-m"
+    
     ## Key sequence: Ctrl-m (Carriage Return)
     ## Executes function: accept-line
     bind '"\C-m": accept-line'
@@ -361,11 +376,6 @@ sc_repl_init() {
         return 1
     fi
 
-    if [[ ${BASH_VERSINFO[0]} -eq 5 ]] && [[ ${BASH_VERSINFO[1]} -eq 1 ]]; then
-        sc_repl_warning "ShellCheck REPL does not work properly, because of a bug in Bash (>= 5.1 & < 5.2). The plan is to find a workaround for this bug. See for https://github.com/HenrikBengtsson/shellcheck-repl/issues/21 details and progress"
-    fi
-
-    
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
     ## SC1090: Can't follow non-constant source. Use a directive to specify
@@ -395,11 +405,11 @@ fi
 
 case ${SHELLCHECK_REPL_ACTION:-"enable"} in
     disable)
-	sc_repl_disable "";;
+        sc_repl_disable "";;
     enable)
-	sc_repl_init "";;
+        sc_repl_init "";;
     sessioninfo)
-	sc_repl_sessioninfo;;
+        sc_repl_sessioninfo;;
     *)
-	sc_repl_error "Unknown value on SHELLCHECK_REPL_ACTION: '${SHELLCHECK_REPL_ACTION}'"
+        sc_repl_error "Unknown value on SHELLCHECK_REPL_ACTION: '${SHELLCHECK_REPL_ACTION}'"
 esac

@@ -167,7 +167,7 @@ SHELLCHECK_REPL_VERBOSE=false
 ## Requirements
 
 * [ShellCheck]
-* [Bash] (>= 4.4), _except_ Bash (>= 5.1.0 & < 5.2.0) [#21]
+* [Bash] (>= 4.4)
 
 Bash is the only supported shell right now.
 

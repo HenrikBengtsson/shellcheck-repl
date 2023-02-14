@@ -2,8 +2,14 @@
 
 ## Version (development version)
 
- * ...
- 
+### Bug Fixes
+
+ * ShellCheck REPL failed when using Bash (>= 5.1.0 & < 5.2) giving
+   `bash: bash_execute_unix_command: cannot find keymap for command`.
+   This was because of a bug in the Bash 5.1 suite, which I work
+   around by removing internal keybinding sequences before trying to
+   re-assign them.
+
 
 ## Version 0.4.1 (2023-02-14)
 
@@ -22,7 +28,8 @@
 
  * Due to a bug Bash (>= 5.1 & < 5.2), ShellCheck REPL will not work
    correctly. ShellCheck REPL will produce an informative warning, if
-   enabled on a buggy Bash version.
+   enabled on a buggy Bash version.  The Bash bug results in error
+   `bash: bash_execute_unix_command: cannot find keymap for command`.
 
 ### Defunct
 
