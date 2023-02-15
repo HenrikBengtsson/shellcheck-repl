@@ -167,7 +167,7 @@ SHELLCHECK_REPL_VERBOSE=false
 ## Requirements
 
 * [ShellCheck]
-* [Bash] (>= 4.4), _except_ Bash (>= 5.1.0 & < 5.2.0) [#21]
+* [Bash] (>= 4.4)
 
 Bash is the only supported shell right now.
 
@@ -178,9 +178,9 @@ Download the `shellcheck-repl.bash` script and source it in your
 `~/.bashrc` startup script, e.g.
 
 ```sh
-$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.4.1.tar.gz
-$ tar xf 0.4.1.tar.gz
-$ echo ". /path/to/software/shellcheck-repl-0.4.1/shellcheck-repl.bash" >> ~/.bashrc
+$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.4.2.tar.gz
+$ tar xf 0.4.2.tar.gz
+$ echo ". /path/to/software/shellcheck-repl-0.4.2/shellcheck-repl.bash" >> ~/.bashrc
 ```
 
 Or, similarly, via Git:
