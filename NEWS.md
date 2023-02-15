@@ -1,6 +1,6 @@
 # shellcheck-repl
 
-## Version (development version)
+## Version 0.4.2 (2023-02-15)
 
 ### Bug Fixes
 
