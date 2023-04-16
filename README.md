@@ -126,6 +126,7 @@ list:
 * [SC1091]: Not following: (error message here).
 * [SC1113]: Use #!, not just #, for the shebang.
 * [SC2034]: 'var' appears unused. Verify it or export it.
+* [SC2096]: On most OS, shebangs can only specify a single parameter.
 * [SC2155]: Declare and assign separately to avoid masking return
   values.
 * [SC2164]: Use 'cd ... || exit' or 'cd ... || return' in case cd
@@ -178,9 +179,9 @@ Download the `shellcheck-repl.bash` script and source it in your
 `~/.bashrc` startup script, e.g.
 
 ```sh
-$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.4.2.tar.gz
-$ tar xf 0.4.2.tar.gz
-$ echo ". /path/to/software/shellcheck-repl-0.4.2/shellcheck-repl.bash" >> ~/.bashrc
+$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.4.3.tar.gz
+$ tar xf 0.4.3.tar.gz
+$ echo ". /path/to/software/shellcheck-repl-0.4.3/shellcheck-repl.bash" >> ~/.bashrc
 ```
 
 Or, similarly, via Git:
@@ -207,6 +208,7 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 [SC1091]: https://github.com/koalaman/shellcheck/wiki/SC1091
 [SC1113]: https://github.com/koalaman/shellcheck/wiki/SC1113
 [SC2034]: https://github.com/koalaman/shellcheck/wiki/SC2034
+[SC2096]: https://github.com/koalaman/shellcheck/wiki/SC2096
 [SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2164]: https://github.com/koalaman/shellcheck/wiki/SC2164
 [#21]: https://github.com/HenrikBengtsson/shellcheck-repl/issues/21

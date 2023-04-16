@@ -1,5 +1,14 @@
 # shellcheck-repl
 
+## Version 0.4.3 (2023-04-16)
+
+### New Features
+
+ * Now ignoring [SC2096], because commenting an _absolute_ path
+   (e.g. `# /path/to/something --foo --bar`), would produce `SC2096
+   (error): On most OS, shebangs can only specify a single parameter.`
+
+
 ## Version 0.4.2 (2023-02-15)
 
 ### Bug Fixes
@@ -198,6 +207,7 @@
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
 [SC1091]: https://github.com/koalaman/shellcheck/wiki/SC1091
 [SC1113]: https://github.com/koalaman/shellcheck/wiki/SC1113
+[SC2096]: https://github.com/koalaman/shellcheck/wiki/SC2096
 [SC2154]: https://github.com/koalaman/shellcheck/wiki/SC2154
 [SC2155]: https://github.com/koalaman/shellcheck/wiki/SC2155
 [SC2178]: https://github.com/koalaman/shellcheck/wiki/SC2178
