@@ -179,9 +179,9 @@ Download the `shellcheck-repl.bash` script and source it in your
 `~/.bashrc` startup script, e.g.
 
 ```sh
-$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.4.2.tar.gz
-$ tar xf 0.4.2.tar.gz
-$ echo ". /path/to/software/shellcheck-repl-0.4.2/shellcheck-repl.bash" >> ~/.bashrc
+$ curl -L -O https://github.com/HenrikBengtsson/shellcheck-repl/archive/refs/tags/0.4.3.tar.gz
+$ tar xf 0.4.3.tar.gz
+$ echo ". /path/to/software/shellcheck-repl-0.4.3/shellcheck-repl.bash" >> ~/.bashrc
 ```
 
 Or, similarly, via Git:
