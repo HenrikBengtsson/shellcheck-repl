@@ -195,7 +195,7 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 
 ## Authors
 
-* GitHub user [xPMo](https://github.com/xPMo) - original code
+* GitHub user [xPMo](https://github.com/xPMo) - [original code from 2019-03-28](https://github.com/koalaman/shellcheck/issues/1535#issuecomment-477633465)
 * Henrik Bengtsson
 
 
