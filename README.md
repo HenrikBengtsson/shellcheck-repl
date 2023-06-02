@@ -199,6 +199,19 @@ $ echo ". /path/to/software/shellcheck-repl/shellcheck-repl.bash" >> ~/.bashrc
 * Henrik Bengtsson
 
 
+## Appendix
+
+### Example: ShellCheck REPL prevents Bash fork bomb
+
+A well-known [fork bomb](https://en.wikipedia.org/wiki/Fork_bomb) in Bash is `:(){ :|:& };:`.  If launched, it will recursively relaunch itself via piping and background jobs.  With ShellCheck REPL enable, we will be prevented from executing the call, e.g.
+
+```sh
+$ :(){ :|:& };:
+     ^-- SC2264 (error): This function unconditionally re-invokes itself. Missing 'command'?
+       ^-- SC2264 (error): This function unconditionally re-invokes itself. Missing 'command'?
+```
+
+
 [ShellCheck]: https://github.com/koalaman/shellcheck
 [Bash]: https://www.gnu.org/software/bash/
 [SC2066]: https://github.com/koalaman/shellcheck/wiki/SC2066
