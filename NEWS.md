@@ -1,6 +1,6 @@
 # shellcheck-repl
 
-## Version (development version)
+## Version 0.4.4 (2024-04-25)
 
  * Now ignoring [SC1044], because it would produce `SC1044 (error):
    Couldn't find end token 'EOF' in the here document.` after entering
