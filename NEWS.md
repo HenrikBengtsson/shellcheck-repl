@@ -1,5 +1,12 @@
 # shellcheck-repl
 
+## Version 0.4.4 (2024-04-25)
+
+ * Now ignoring [SC1044], because it would produce `SC1044 (error):
+   Couldn't find end token 'EOF' in the here document.` after entering
+   the first line of a here document.
+ 
+
 ## Version 0.4.3 (2023-04-16)
 
 ### New Features
@@ -204,6 +211,7 @@
    at [ShellCheck Issue #1535].
 
 
+[SC1044]: https://github.com/koalaman/shellcheck/wiki/SC1044
 [SC1090]: https://github.com/koalaman/shellcheck/wiki/SC1090
 [SC1091]: https://github.com/koalaman/shellcheck/wiki/SC1091
 [SC1113]: https://github.com/koalaman/shellcheck/wiki/SC1113

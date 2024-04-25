@@ -11,7 +11,7 @@
 #' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.3"
+    echo "0.4.4"
 }
 
 
@@ -378,6 +378,7 @@ sc_repl_init() {
 
     ## Ignore some ShellCheck issues:
     ## SC1001: This \= will be a regular '=' in this context.
+    ## SC1044: Couldn't find end token `EOF' in the here document.
     ## SC1090: Can't follow non-constant source. Use a directive to specify
     ##         location.
     ## SC1091: Not following: (error message here).
@@ -386,7 +387,7 @@ sc_repl_init() {
     ## SC2096: On most OS, shebangs can only specify a single parameter.
     ## SC2155: Declare and assign separately to avoid masking return values.
     ## SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
-    defaults=1001,1090,1091,1113,2034,2096,2155,2164
+    defaults=1001,1044,1090,1091,1113,2034,2096,2155,2164
     sc_repl_debug "- defaults: ${defaults}"
     SHELLCHECK_REPL_EXCLUDE=${SHELLCHECK_REPL_EXCLUDE:-${defaults}}
     sc_repl_debug "- SHELLCHECK_REPL_EXCLUDE: ${SHELLCHECK_REPL_EXCLUDE}"
