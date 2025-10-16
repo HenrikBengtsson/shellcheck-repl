@@ -1,6 +1,6 @@
 # shellcheck-repl
 
-## Version (development version)
+## Version 0.5.0 (2025-10-16)
 
  * Now `source shellcheck-repl.bash` asserts that it is called from an
    interactive shell. If not, an informative error message is produced.

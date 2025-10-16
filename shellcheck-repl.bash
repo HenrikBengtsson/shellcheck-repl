@@ -8,10 +8,10 @@
 #' source shellcheck-repl.bash
 #'
 #' License: ISC
-#' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
+#' Source code: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.4-9001"
+    echo "0.5.0"
 }
 
 
