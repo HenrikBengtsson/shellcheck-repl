@@ -8,10 +8,10 @@
 #' source shellcheck-repl.bash
 #'
 #' License: ISC
-#' Home page: https://github.com/HenrikBengtsson/shellcheck-repl
+#' Source code: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.4.4"
+    echo "0.5.0"
 }
 
 
@@ -69,6 +69,10 @@ sc_repl_sessioninfo() {
 #    echo "Bash key sequences bound to functions:"
 #    bind -P | grep "can be found"
 }    
+
+sc_is_interactive() {
+    [[ $- == *i* ]] && [[ -t 0 && -t 1 ]]
+}
 
 sc_repl_warning() {
     echo >&2 "WARNING: ${*} [shellcheck-repl $(sc_repl_version); bash ${BASH_VERSION}]"
@@ -399,12 +403,16 @@ sc_wiki_url() {
     echo "https://github.com/koalaman/shellcheck/wiki/$1"
 }
 
+if ! sc_is_interactive; then
+    sc_repl_error "ShellCheck REPL works only in interactive mode and not in batch mode"
+    exit 1
+fi    
 
 ## Deprecation warning
 if [[ -n ${SHELLCHECK_REPL_INIT} ]]; then
     sc_repl_error "SHELLCHECK_REPL_INIT is defunct. Use SHELLCHECK_REPL_ACTION=init or SHELLCHECK_REPL_ACTION=none instead"
 fi
-
+    
 case ${SHELLCHECK_REPL_ACTION:-"enable"} in
     disable)
         sc_repl_disable "";;
