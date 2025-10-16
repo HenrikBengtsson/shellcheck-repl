@@ -11,7 +11,7 @@
 #' Source code: https://github.com/HenrikBengtsson/shellcheck-repl
 
 sc_repl_version() {
-    echo "0.5.0"
+    echo "0.5.0-9000"
 }
 
 
